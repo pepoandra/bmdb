@@ -35,9 +35,16 @@ function App() {
   }
 
   async function deleteNote({ id }) {
-    const newNotesArray = notes.filter(note => note.id !== id);
+    let input = {};
+    const newNotesArray = notes.map((note) => {
+        if(note.id === id){
+            input = note;
+        } else {
+            return note;
+        }
+    });
     setNotes(newNotesArray);
-    await API.graphql({ query: deleteNoteMutation, variables: { input: { id } }});
+    await API.graphql({ query: deleteNoteMutation, variables: { input }});
   }
 
   return (
