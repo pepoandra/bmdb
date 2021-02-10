@@ -45,7 +45,7 @@ function App() {
       <h1>My Notes App that will become about movies sooner than later</h1>
       <input
         onChange={e => setFormData({ ...formData, 'name': e.target.value})}
-        placeholder="Note name, but do know this will be about movies soon"
+        placeholder="Note, but do know this will be about movies soon"
         value={formData.name}
       />
       <input
