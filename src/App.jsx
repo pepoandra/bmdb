@@ -34,22 +34,15 @@ function App() {
     setFormData(initialFormState);
   }
 
-  async function deleteNote({ id }) {
-    let input = {};
-    const newNotesArray = notes.map((note) => {
-        if(note.id === id){
-            input = note;
-        } else {
-            return note;
-        }
-    });
+  async function deleteNote(note) {
+    const newNotesArray = notes.filter(n => n.id !== note.id);
     setNotes(newNotesArray);
-    await API.graphql({ query: deleteNoteMutation, variables: { input }});
+    await API.graphql({ query: deleteNoteMutation, variables: { input: note }});
   }
 
   return (
     <div className="App">
-      <h1>My Notes App that will become about movies sooner than later</h1>
+      <h1>Delete now MAYBE fixed lets see, lol</h1>
       <input
         onChange={e => setFormData({ ...formData, 'name': e.target.value})}
         placeholder="Note, but do know this will be about movies soon"
