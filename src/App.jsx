@@ -4,7 +4,14 @@ import { API } from 'aws-amplify';
 import { AmplifySignOut } from '@aws-amplify/ui-react';
 import { listNotes } from './graphql/queries';
 import { createNote as createNoteMutation, deleteNote as deleteNoteMutation } from './graphql/mutations';
-
+import Amplify from 'aws-amplify';
+import config from './aws-exports';
+Amplify.configure({
+  ...config,
+  Analytics: {
+    disabled: true,
+  },
+});
 const initialFormState = { name: '', description: '' }
 
 function App() {
