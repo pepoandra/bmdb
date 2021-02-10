@@ -50,7 +50,7 @@ function App() {
       />
       <input
         onChange={e => setFormData({ ...formData, 'description': e.target.value})}
-        placeholder="Note description"
+        placeholder="Note description, but will be about movies, i tell ya"
         value={formData.description}
       />
       <button onClick={createNote}>Create Note</button>
