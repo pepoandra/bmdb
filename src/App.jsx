@@ -34,15 +34,15 @@ function App() {
     setFormData(initialFormState);
   }
 
-  async function deleteNote(note) {
-    const newNotesArray = notes.filter(n => n.id !== note.id);
+  async function deleteNote({ id }) {
+    const newNotesArray = notes.filter(note => note.id !== id);
     setNotes(newNotesArray);
-    await API.graphql({ query: deleteNoteMutation, variables: { input: note }});
+    await API.graphql({ query: deleteNoteMutation, variables: { input: { id } }});
   }
 
   return (
     <div className="App">
-      <h1>Delete now MAYBE fixed lets see, lol</h1>
+      <h1>Back to just OG code</h1>
       <input
         onChange={e => setFormData({ ...formData, 'name': e.target.value})}
         placeholder="Note, but do know this will be about movies soon"
