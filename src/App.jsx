@@ -24,6 +24,10 @@ function App() {
     fetchMovies();
   }, []);
 
+  function setHours(d) {
+      d.setHours(d.getHours() + 8 );
+      return d;
+  }
   async function fetchMovies() {
     const apiData = await API.graphql({ query: listMovies });
     setMovies(apiData.data.listMovies.items);
@@ -39,8 +43,8 @@ function App() {
                   return {
                       id,
                       title: m.title,
-                      start: new Date(m.date),
-                      end: new Date(m.date),
+                      start: setHours(new Date(m.date)),
+                      end: setHours(new Date(m.date)),
                   }
 
               })}
