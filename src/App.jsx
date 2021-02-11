@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './App.css';
 import { API } from 'aws-amplify';
-import { AmplifySignOut } from '@aws-amplify/ui-react';
 import { listMovies } from './graphql/queries';
 import { Calendar, momentLocalizer } from 'react-big-calendar';
 import moment from 'moment';
