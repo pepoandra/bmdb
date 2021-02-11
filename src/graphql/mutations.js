@@ -1,15 +1,17 @@
 /* eslint-disable */
 // this is an auto generated file. This will be overwritten
 
-export const createNote = /* GraphQL */ `
-  mutation CreateNote(
-    $input: CreateNoteInput!
-    $condition: ModelNoteConditionInput
+export const createMovie = /* GraphQL */ `
+  mutation CreateMovie(
+    $input: CreateMovieInput!
+    $condition: ModelMovieConditionInput
   ) {
-    createNote(input: $input, condition: $condition) {
+    createMovie(input: $input, condition: $condition) {
       id
-      name
-      description
+      title
+      date
+      points
+      personID
       _version
       _deleted
       _lastChangedAt
@@ -18,15 +20,17 @@ export const createNote = /* GraphQL */ `
     }
   }
 `;
-export const updateNote = /* GraphQL */ `
-  mutation UpdateNote(
-    $input: UpdateNoteInput!
-    $condition: ModelNoteConditionInput
+export const updateMovie = /* GraphQL */ `
+  mutation UpdateMovie(
+    $input: UpdateMovieInput!
+    $condition: ModelMovieConditionInput
   ) {
-    updateNote(input: $input, condition: $condition) {
+    updateMovie(input: $input, condition: $condition) {
       id
-      name
-      description
+      title
+      date
+      points
+      personID
       _version
       _deleted
       _lastChangedAt
@@ -35,20 +39,118 @@ export const updateNote = /* GraphQL */ `
     }
   }
 `;
-export const deleteNote = /* GraphQL */ `
-  mutation DeleteNote(
-    $input: DeleteNoteInput!
-    $condition: ModelNoteConditionInput
+export const deleteMovie = /* GraphQL */ `
+  mutation DeleteMovie(
+    $input: DeleteMovieInput!
+    $condition: ModelMovieConditionInput
   ) {
-    deleteNote(input: $input, condition: $condition) {
+    deleteMovie(input: $input, condition: $condition) {
       id
-      name
-      description
+      title
+      date
+      points
+      personID
       _version
       _deleted
       _lastChangedAt
       createdAt
       updatedAt
+    }
+  }
+`;
+export const createPerson = /* GraphQL */ `
+  mutation CreatePerson(
+    $input: CreatePersonInput!
+    $condition: ModelPersonConditionInput
+  ) {
+    createPerson(input: $input, condition: $condition) {
+      id
+      name
+      _version
+      _deleted
+      _lastChangedAt
+      createdAt
+      updatedAt
+      Movies {
+        items {
+          id
+          title
+          date
+          points
+          personID
+          _version
+          _deleted
+          _lastChangedAt
+          createdAt
+          updatedAt
+        }
+        nextToken
+        startedAt
+      }
+    }
+  }
+`;
+export const updatePerson = /* GraphQL */ `
+  mutation UpdatePerson(
+    $input: UpdatePersonInput!
+    $condition: ModelPersonConditionInput
+  ) {
+    updatePerson(input: $input, condition: $condition) {
+      id
+      name
+      _version
+      _deleted
+      _lastChangedAt
+      createdAt
+      updatedAt
+      Movies {
+        items {
+          id
+          title
+          date
+          points
+          personID
+          _version
+          _deleted
+          _lastChangedAt
+          createdAt
+          updatedAt
+        }
+        nextToken
+        startedAt
+      }
+    }
+  }
+`;
+export const deletePerson = /* GraphQL */ `
+  mutation DeletePerson(
+    $input: DeletePersonInput!
+    $condition: ModelPersonConditionInput
+  ) {
+    deletePerson(input: $input, condition: $condition) {
+      id
+      name
+      _version
+      _deleted
+      _lastChangedAt
+      createdAt
+      updatedAt
+      Movies {
+        items {
+          id
+          title
+          date
+          points
+          personID
+          _version
+          _deleted
+          _lastChangedAt
+          createdAt
+          updatedAt
+        }
+        nextToken
+        startedAt
+      }
     }
   }
 `;

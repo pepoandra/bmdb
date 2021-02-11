@@ -1,12 +1,14 @@
 /* eslint-disable */
 // this is an auto generated file. This will be overwritten
 
-export const getNote = /* GraphQL */ `
-  query GetNote($id: ID!) {
-    getNote(id: $id) {
+export const getMovie = /* GraphQL */ `
+  query GetMovie($id: ID!) {
+    getMovie(id: $id) {
       id
-      name
-      description
+      title
+      date
+      points
+      personID
       _version
       _deleted
       _lastChangedAt
@@ -15,17 +17,19 @@ export const getNote = /* GraphQL */ `
     }
   }
 `;
-export const listNotes = /* GraphQL */ `
-  query ListNotes(
-    $filter: ModelNoteFilterInput
+export const listMovies = /* GraphQL */ `
+  query ListMovies(
+    $filter: ModelMovieFilterInput
     $limit: Int
     $nextToken: String
   ) {
-    listNotes(filter: $filter, limit: $limit, nextToken: $nextToken) {
+    listMovies(filter: $filter, limit: $limit, nextToken: $nextToken) {
       items {
         id
-        name
-        description
+        title
+        date
+        points
+        personID
         _version
         _deleted
         _lastChangedAt
@@ -37,14 +41,110 @@ export const listNotes = /* GraphQL */ `
     }
   }
 `;
-export const syncNotes = /* GraphQL */ `
-  query SyncNotes(
-    $filter: ModelNoteFilterInput
+export const syncMovies = /* GraphQL */ `
+  query SyncMovies(
+    $filter: ModelMovieFilterInput
     $limit: Int
     $nextToken: String
     $lastSync: AWSTimestamp
   ) {
-    syncNotes(
+    syncMovies(
+      filter: $filter
+      limit: $limit
+      nextToken: $nextToken
+      lastSync: $lastSync
+    ) {
+      items {
+        id
+        title
+        date
+        points
+        personID
+        _version
+        _deleted
+        _lastChangedAt
+        createdAt
+        updatedAt
+      }
+      nextToken
+      startedAt
+    }
+  }
+`;
+export const getPerson = /* GraphQL */ `
+  query GetPerson($id: ID!) {
+    getPerson(id: $id) {
+      id
+      name
+      _version
+      _deleted
+      _lastChangedAt
+      createdAt
+      updatedAt
+      Movies {
+        items {
+          id
+          title
+          date
+          points
+          personID
+          _version
+          _deleted
+          _lastChangedAt
+          createdAt
+          updatedAt
+        }
+        nextToken
+        startedAt
+      }
+    }
+  }
+`;
+export const listPersons = /* GraphQL */ `
+  query ListPersons(
+    $filter: ModelPersonFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    listPersons(filter: $filter, limit: $limit, nextToken: $nextToken) {
+      items {
+        id
+        name
+        _version
+        _deleted
+        _lastChangedAt
+        createdAt
+        updatedAt
+        Movies {
+          items {
+            id
+            title
+            date
+            points
+            personID
+            _version
+            _deleted
+            _lastChangedAt
+            createdAt
+            updatedAt
+          }
+          nextToken
+          startedAt
+        }
+      }
+      nextToken
+      startedAt
+    }
+  }
+`;
+export const syncPeople = /* GraphQL */ `
+  query SyncPeople(
+    $filter: ModelPersonFilterInput
+    $limit: Int
+    $nextToken: String
+    $lastSync: AWSTimestamp
+  ) {
+    syncPeople(
       filter: $filter
       limit: $limit
       nextToken: $nextToken
@@ -53,12 +153,27 @@ export const syncNotes = /* GraphQL */ `
       items {
         id
         name
-        description
         _version
         _deleted
         _lastChangedAt
         createdAt
         updatedAt
+        Movies {
+          items {
+            id
+            title
+            date
+            points
+            personID
+            _version
+            _deleted
+            _lastChangedAt
+            createdAt
+            updatedAt
+          }
+          nextToken
+          startedAt
+        }
       }
       nextToken
       startedAt

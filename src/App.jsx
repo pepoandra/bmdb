@@ -8,6 +8,8 @@ import moment from 'moment';
 
 import Amplify from 'aws-amplify';
 import config from './aws-exports';
+
+import 'react-big-calendar/lib/css/react-big-calendar.css';
 Amplify.configure({
   ...config,
   Analytics: {
@@ -48,17 +50,6 @@ function App() {
               style={{ height: 500 }}
             />
         </div>
-      <div style={{marginBottom: 30}}>
-        {
-          movies.map(movie => (
-            <div key={movie.id || movie.title}>
-              <h2>{movie.title}</h2>
-              <p>{JSON.stringify(movie)}</p>
-            </div>
-          ))
-        }
-      </div>
-      <AmplifySignOut />
     </div>
   );
 }

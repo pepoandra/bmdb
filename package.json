@@ -10,6 +10,7 @@
     "aws-amplify": "^3.3.17",
     "graphql": "^0.13.2",
     "moment": "^2.29.1",
+    "node-sass": "^5.0.0",
     "react": "^17.0.1",
     "react-big-calendar": "^0.31.0",
     "react-dom": "^17.0.1",

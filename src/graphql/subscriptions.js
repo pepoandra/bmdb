@@ -1,12 +1,14 @@
 /* eslint-disable */
 // this is an auto generated file. This will be overwritten
 
-export const onCreateNote = /* GraphQL */ `
-  subscription OnCreateNote {
-    onCreateNote {
+export const onCreateMovie = /* GraphQL */ `
+  subscription OnCreateMovie {
+    onCreateMovie {
       id
-      name
-      description
+      title
+      date
+      points
+      personID
       _version
       _deleted
       _lastChangedAt
@@ -15,12 +17,14 @@ export const onCreateNote = /* GraphQL */ `
     }
   }
 `;
-export const onUpdateNote = /* GraphQL */ `
-  subscription OnUpdateNote {
-    onUpdateNote {
+export const onUpdateMovie = /* GraphQL */ `
+  subscription OnUpdateMovie {
+    onUpdateMovie {
       id
-      name
-      description
+      title
+      date
+      points
+      personID
       _version
       _deleted
       _lastChangedAt
@@ -29,17 +33,106 @@ export const onUpdateNote = /* GraphQL */ `
     }
   }
 `;
-export const onDeleteNote = /* GraphQL */ `
-  subscription OnDeleteNote {
-    onDeleteNote {
+export const onDeleteMovie = /* GraphQL */ `
+  subscription OnDeleteMovie {
+    onDeleteMovie {
       id
-      name
-      description
+      title
+      date
+      points
+      personID
       _version
       _deleted
       _lastChangedAt
       createdAt
       updatedAt
+    }
+  }
+`;
+export const onCreatePerson = /* GraphQL */ `
+  subscription OnCreatePerson {
+    onCreatePerson {
+      id
+      name
+      _version
+      _deleted
+      _lastChangedAt
+      createdAt
+      updatedAt
+      Movies {
+        items {
+          id
+          title
+          date
+          points
+          personID
+          _version
+          _deleted
+          _lastChangedAt
+          createdAt
+          updatedAt
+        }
+        nextToken
+        startedAt
+      }
+    }
+  }
+`;
+export const onUpdatePerson = /* GraphQL */ `
+  subscription OnUpdatePerson {
+    onUpdatePerson {
+      id
+      name
+      _version
+      _deleted
+      _lastChangedAt
+      createdAt
+      updatedAt
+      Movies {
+        items {
+          id
+          title
+          date
+          points
+          personID
+          _version
+          _deleted
+          _lastChangedAt
+          createdAt
+          updatedAt
+        }
+        nextToken
+        startedAt
+      }
+    }
+  }
+`;
+export const onDeletePerson = /* GraphQL */ `
+  subscription OnDeletePerson {
+    onDeletePerson {
+      id
+      name
+      _version
+      _deleted
+      _lastChangedAt
+      createdAt
+      updatedAt
+      Movies {
+        items {
+          id
+          title
+          date
+          points
+          personID
+          _version
+          _deleted
+          _lastChangedAt
+          createdAt
+          updatedAt
+        }
+        nextToken
+        startedAt
+      }
     }
   }
 `;
