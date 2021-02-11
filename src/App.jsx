@@ -46,7 +46,7 @@ function App() {
               })}
               startAccessor="start"
               endAccessor="end"
-              style={{ height: 500 }}
+              style={{ height: 800 }}
             />
         </div>
     </div>
