@@ -31,7 +31,7 @@ function App() {
 
   return (
     <div className="App">
-      <h1>BMDB</h1>
+      <h1>BMDB.</h1>
         <div>
             <Calendar
               localizer={localizer}
