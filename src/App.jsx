@@ -32,7 +32,7 @@ function App() {
 
   return (
     <div className="App">
-      <h1>Back to just OG code</h1>
+      <h1>BMDB</h1>
         <div>
             <Calendar
               localizer={localizer}
@@ -40,8 +40,8 @@ function App() {
                   return {
                       id,
                       title: m.title,
-                      start: m.date,
-                      end: m.date,
+                      start: new Date(m.date),
+                      end: new Date(m.date),
                   }
 
               })}
