@@ -1,6 +1,14 @@
-type Note @model @auth(rules: [{allow: public}]) {
+type Movie @model @auth(rules: [{allow: public}]) @key(name: "byPerson", fields: ["personID"]) {
   id: ID!
-  name: String!
-  description: String
+  title: String
+  date: AWSDate
+  points: Int
+  personID: ID!
+}
+
+type Person @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  name: String
+  Movies: [Movie] @connection(keyName: "byPerson", fields: ["id"])
 }
  
