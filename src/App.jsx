@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import './App.css';
 import { API } from 'aws-amplify';
-import { listMovies } from './graphql/queries';
+import { listMovies, listPersons } from './graphql/queries';
 import { Calendar, momentLocalizer } from 'react-big-calendar';
 import moment from 'moment';
 import Modal from 'react-modal';
@@ -23,7 +23,11 @@ const localizer = momentLocalizer(moment);
 
 function App() {
   const [movies, setMovies] = useState([]);
+  const [persons, setPersons] = useState([]);
+
   const [selectedMovie, setSelectedMovie] = useState('');
+  const [suggestedBy, setSuggestedBy] = useState('');
+
   const [overview, setOverview] = useState('');
   const [poster, setPoster] = useState('');
 
@@ -48,6 +52,7 @@ function App() {
   }
   useEffect(() => {
     fetchMovies();
+    fetchPersons();
   }, []);
 
   function setHours(d) {
@@ -57,11 +62,21 @@ function App() {
   async function handleEventClick(event) {
       await setSelectedMovie(event.title);
       getMovieInfo(event.title);
+      const person = persons.find(p => p.id === event.person );
+      if(person){
+          setSuggestedBy(person.name);
+      } else {
+          setSuggestedBy('idk, lol');
+      }
       openModal();
   }
   async function fetchMovies() {
     const apiData = await API.graphql({ query: listMovies });
     setMovies(apiData.data.listMovies.items);
+  }
+  async function fetchPersons() {
+    const apiData = await API.graphql({ query: listPersons });
+    setPersons(apiData.data.listPersons.items);
   }
 
   function showDescription(title) {
@@ -72,6 +87,9 @@ function App() {
                    <ul>
                       <li>
                           {`Title: ${title}`}
+                      </li>
+                      <li>
+                          {`Suggested by: ${suggestedBy}`}
                       </li>
                       <li>
                           {`Votes for best: ${event.best}`}
@@ -102,6 +120,7 @@ function App() {
                       best: m.best || 0,
                       start: setHours(new Date(m.date)),
                       end: setHours(new Date(m.date)),
+                      person: m.personID
                   }
               })}
               startAccessor="start"
