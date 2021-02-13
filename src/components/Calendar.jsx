@@ -5,16 +5,14 @@ import { listMovies, listPersons } from '../graphql/queries'
 import { Calendar, momentLocalizer } from 'react-big-calendar'
 import moment from 'moment'
 import 'react-big-calendar/lib/css/react-big-calendar.css'
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemText from '@material-ui/core/ListItemText';
 import Button from '@material-ui/core/Button';
 import Dialog, { DialogProps } from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
-import DialogTitle from '@material-ui/core/DialogTitle';
 import Card from '@material-ui/core/Card';
+ import MoreVertIcon from '@material-ui/icons/MoreVert';
+import Avatar from '@material-ui/core/Avatar';
+import IconButton from '@material-ui/core/IconButton';
+import CardHeader from '@material-ui/core/CardHeader';
 import CardContent from '@material-ui/core/CardContent';
 import CardMedia from '@material-ui/core/CardMedia';
 import Typography from '@material-ui/core/Typography';
@@ -43,7 +41,7 @@ function CalendarComponent () {
   }
 
   function getMovieInfo (title) {
-    moviedb.searchMovie({ query: title.split('(')[0] })
+    moviedb.searchMovie({ query: title.split('(')[0], language: 'en' })
       .then(res => {
         setOverview(res.results[0].overview)
         setPoster(res.results[0].poster_path)
@@ -88,42 +86,56 @@ function CalendarComponent () {
   function showDescription (title) {
     const event = movies.find(m => m.title === title)
     if (!event) return
-    return <Card>
-                <Grid container spacing={3}>
-                    <Grid item xs={5}>
-                        <CardContent>
-                            <Grid container>
-                                <Grid item xs={6}>
-                                    <h3>
-                                        Picked by: {suggestedBy}
-                                    </h3>
-                                </Grid>
-                                {displayVerticalSpace(15)}
-                                <Grid item xs={12}>
-                                    <Typography variant="body2" color="textPrimary" component="p">
-                                        {overview}
-                                    </Typography>
-                                </Grid>
+    let backgroundColor = event.worst > event.best? '#FF0000' :'#006400'
+    backgroundColor = event.worst === event.best? '#C0C0C0': backgroundColor
+    const avatarStyles = {
+        height: '70px',
+        width: '70px',
+        backgroundColor }
+    const bestColor = event.best > 0? 'green' : 'gray'
+    const worstColor = event.worst > 0? 'red' : 'gray'
 
-                                {displayVerticalSpace(15)}
-                                <Grid item xs={12} style={{textAlign: "center"}}>
-                                    <div>{event.best} <ThumbUpAltTwoToneIcon/>  <ThumbDownAltTwoToneIcon/> {event.worst} </div>
-                                </Grid>
-                            </Grid>
-
-                        </CardContent>
+      return <Card>
+        <CardHeader
+            avatar={
+                <Avatar style={avatarStyles}>
+                    {suggestedBy}
+                </Avatar>
+            }
+            action={
+                <IconButton aria-label="settings">
+                    <MoreVertIcon />
+                </IconButton>
+            }
+            title={selectedMovie}
+            subheader={`Picked by ${suggestedBy}`}
+        />
+                <CardContent>
+                    <Grid container>
+                        <Grid item xs={12}>
+                            <Typography variant="body2" color="textPrimary" component="p">
+                                {overview}
+                            </Typography>
+                        </Grid>
+                        {displayVerticalSpace(15)}
+                        <Grid item xs={12} style={{textAlign: "center"}}>
+                            <div>{event.best} <ThumbUpAltTwoToneIcon style={{fill: bestColor}}/>  <ThumbDownAltTwoToneIcon style={{fill: worstColor}}/> {event.worst} </div>
+                        </Grid>
+                        {displayVerticalSpace(8)}
+                        <Grid item xs={12} style={{textAlign: "center"}}>
+                            <CardMedia
+                                className={'media'}
+                                component="img"
+                                image={`https://image.tmdb.org/t/p/original/${poster}`}
+                            />
+                        </Grid>
                     </Grid>
-                    <Grid item xs={6}>
-                        <CardMedia
-                            component="img"
-                            alt="Contemplative Reptile"
-                            image={`https://image.tmdb.org/t/p/original/${poster}`}
-                            title="Contemplative Reptile"
-                        />
-                        {displayVerticalSpace()}
-                    </Grid>
-                </Grid>
+                </CardContent>
             </Card>
+  }
+  const dialogPaper = {
+      minHeight: '50vh',
+      maxHeight: '90vh',
   }
 
   return (
@@ -150,18 +162,15 @@ function CalendarComponent () {
             />
         </div>
         <Dialog
-            fullWidth={true}
-            maxWidth={'md'}
+            fullWidth={false}
+            maxWidth={'sm'}
+            scroll={'paper'}
+            classes={{dialogPaper}}
             open={modalIsOpen}
             onClose={closeModal}
             aria-labelledby="max-width-dialog-title"
         >
-            <DialogTitle id="max-width-dialog-title">{selectedMovie}</DialogTitle>
-            <DialogContent>
-                <DialogContentText>
-                    {showDescription(selectedMovie)}
-                </DialogContentText>
-            </DialogContent>
+                {showDescription(selectedMovie)}
             <DialogActions>
                 <Button onClick={closeModal} color="primary">
                     Close
