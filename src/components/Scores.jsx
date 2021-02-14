@@ -1,7 +1,7 @@
 import React from 'react'
 import Box from '@material-ui/core/Box';
 import {Card, Container, Table, TableContainer, TableHead, TableRow} from "@material-ui/core";
-import logo from '../1626633-200.png';
+import logo from '../cork.png';
 import movieImg from '../movie.jpg';
 import CardHeader from "@material-ui/core/CardHeader";
 import Grid from "@material-ui/core/Grid";
