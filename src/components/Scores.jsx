@@ -67,6 +67,7 @@ export function Scores () {
                                 avatar={
                                     <img src={logo} alt="Logo" className={'cork'}/>
                                 }
+                                titleTypographyProps={{variant: 'h5'}}
                                 title={'Corking'}
                                 subheader={`It's the final corkdown`}
                             />
@@ -104,6 +105,7 @@ export function Scores () {
                                 avatar={
                                     <img src={movieImg} alt="Logo" className={'cork'}/>
                                 }
+                                titleTypographyProps={{variant: 'h5'}}
                                 title={'Points'}
                                 subheader={`Cinephile hall of fame`}
                             />

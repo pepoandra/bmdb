@@ -94,5 +94,23 @@
 .rulesCard {
   display: block;
   transitionDuration: 0.3s;
-  height: 25vw;
+  height: 45vw;
 }
+
+.tags {
+  display: flex;
+  justify-content: start ;
+  max-width: 400px;
+  padding: 0;
+}
+
+.chips {
+  margin: 5px;
+}
+
+.bistroMovieCard {
+  display: block;
+  transitionDuration: 0.3s;
+  height: 50vw;
+}
+

@@ -21,6 +21,7 @@ export function Rules () {
                                 avatar={
                                     <img src={logo} alt="Logo" className={'cork'}/>
                                 }
+                                titleTypographyProps={{variant: 'h5'}}
                                 title={'Corking'}
                                 subheader={`How movies get selected`}
                             />
@@ -51,6 +52,7 @@ export function Rules () {
                                 avatar={
                                     <img src={movieImg} alt="Logo" className={'cork'}/>
                                 }
+                                titleTypographyProps={{variant: 'h5'}}
                                 title={'Points'}
                                 subheader={`How points are assigned`}
                             />
