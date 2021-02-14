@@ -5,12 +5,17 @@ import {
   Route,
   Link
 } from 'react-router-dom'
-import { CalendarComponent } from './components/Calendar'
 import { NotFound } from './components/NotFound'
+
 import { createStyles, makeStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
+import {Rules} from "./components/Rules";
+import {CalendarComponent} from "./components/Calendar";
+import {Scores} from "./components/Scores";
+import {Suggestions} from "./components/Suggestions";
+import {Bistro} from "./components/Bistro";
 
 const useStyles = makeStyles((theme) =>
     createStyles({
@@ -38,8 +43,11 @@ export default function BasicExample () {
                         textColor="primary"
                         centered
                     >
-                        <Tab label="Calendar" component={Link} to={'/'}/>
-                        <Tab label="Movies" component={Link} to={'/movies'}/>
+                        <Tab label={'Calendar'} component={Link} to={'/'}/>
+                        <Tab label={'Rules'} component={Link} to={'/rules'}/>
+                        <Tab label={'Scoreboard'} component={Link} to={'/scores'}/>
+                        <Tab label={'Suggestions'} component={Link} to={'/suggestions'}/>
+                        <Tab label={'Bistro'} component={Link} to={'/bistro'}/>
                     </Tabs>
                 </Paper>
                 <hr />
@@ -47,11 +55,17 @@ export default function BasicExample () {
                     <Route exact path="/">
                         <CalendarComponent />
                     </Route>
-                    <Route path="/about">
-                        <About />
+                    <Route path="/rules">
+                        <Rules  />
                     </Route>
-                    <Route path="/dashboard">
-                        <Dashboard />
+                    <Route path="/scores">
+                        <Scores />
+                    </Route>
+                    <Route path="/suggestions">
+                        <Suggestions />
+                    </Route>
+                    <Route path="/bistro">
+                        <Bistro />
                     </Route>
                     <Route component={NotFound} />
                 </Switch>
@@ -60,18 +74,3 @@ export default function BasicExample () {
   )
 }
 
-function About () {
-  return (
-        <div>
-            <h2>About</h2>
-        </div>
-  )
-}
-
-function Dashboard () {
-  return (
-        <div>
-            <h2>Dashboard</h2>
-        </div>
-  )
-}

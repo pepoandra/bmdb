@@ -9,7 +9,7 @@ import Button from '@material-ui/core/Button';
 import Dialog, { DialogProps } from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import Card from '@material-ui/core/Card';
- import MoreVertIcon from '@material-ui/icons/MoreVert';
+import MoreVertIcon from '@material-ui/icons/MoreVert';
 import Avatar from '@material-ui/core/Avatar';
 import IconButton from '@material-ui/core/IconButton';
 import CardHeader from '@material-ui/core/CardHeader';
@@ -19,6 +19,7 @@ import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
 import ThumbUpAltTwoToneIcon from '@material-ui/icons/ThumbUpAltTwoTone';
 import ThumbDownAltTwoToneIcon from '@material-ui/icons/ThumbDownAltTwoTone';
+ import {displayVerticalSpace} from "../helpers/helpers";
 const { MovieDb } = require('moviedb-promise')
 const moviedb = new MovieDb('e8bb48788d1a95090608148c98ab71d5')
 
@@ -80,9 +81,7 @@ function CalendarComponent () {
     const apiData = await API.graphql({ query: listPersons })
     setPersons(apiData.data.listPersons.items)
   }
-  function displayVerticalSpace(margin) {
-      return <div style={{ margin }}> </div>;
-  }
+
   function showDescription (title) {
     const event = movies.find(m => m.title === title)
     if (!event) return

@@ -85,3 +85,14 @@
   margin-right: auto;
 }
 
+.cork {
+  height: 10vmin;
+  pointer-events: none;
+  -ms-transform: translate(-50%, -50%);
+}
+
+.rulesCard {
+  display: block;
+  transitionDuration: 0.3s;
+  height: 25vw;
+}
