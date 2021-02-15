@@ -7,91 +7,92 @@ import CardContent from "@material-ui/core/CardContent";
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
-import { makeStyles } from '@material-ui/core/styles';
 import {API} from "aws-amplify";
 import {listMovies} from "../graphql/queries";
 import {displayVerticalSpace} from "../helpers/helpers";
 import Chip from '@material-ui/core/Chip';
-
 import Divider from '@material-ui/core/Divider';
 import FormGroup from '@material-ui/core/FormGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
-import { withStyles } from '@material-ui/core/styles';
 import Typography from "@material-ui/core/Typography";
 
 const personLoggedIn = 'Seb'
 
 export function Bistro () {
-    const [movies, setMovies] = useState([])
-    const [selectedMovie, setSelectedMovie] = useState('')
-    const [rating, setRating] = useState(0)
-    const [tags, setTags] = useState([])
-    const [watchers, setWatchers] = useState([])
-    const [newTag, setNewTag] = useState('')
-    const [thoughts, setThoughts] = useState('')
+    const [state, setState] = useState({
+        movies: [],
+        selectedMovie: '',
+        rating: 0,
+        tags: '',
+        newTag: '',
+        watchers: '',
+        thoughts: '',
+        isCreateModalOpen: false,
+    })
 
     useEffect(() => {
         fetchMovies()
     }, [])
     async function fetchMovies () {
         const apiData = await API.graphql({ query: listMovies })
-        await setMovies(apiData.data.listMovies.items)
-        if(apiData.data.listMovies.items.length > 0) setMovieWithTags(apiData.data.listMovies.items[0].title)
-
-    }
-    async function setMovieWithTags(title) {
-        setSelectedMovie(title)
-        const movie = movies.find(m => m.title === title)
-        if(movie){
-            await setTags(movie.tags)
-            await setRating(movie[`rate${personLoggedIn}`])
-            await setWatchers(movie.watchedBy)
-            await setThoughts(movie.thoughts)
-        }
+        const fetchedMovie = apiData.data.listMovies.items;
+        if(fetchedMovie.length > 0)
+        await setState({
+            ...state,
+            movies: fetchedMovie,
+            tags: fetchedMovie[0].tags,
+            rating: fetchedMovie[0][`rate${personLoggedIn}`],
+            selectedMovie: fetchedMovie[0].title,
+            watchers: fetchedMovie[0].watchedBy,
+            thoughts: fetchedMovie[0].thoughts,
+        })
     }
 
+
+    function clickCreateMovie() {
+        setState({...state, isCreateModalOpen: !state.isCreateModalOpen })
+    }
     function saveMovie() {
-        const actualMovie = movies.find(m => m.title === selectedMovie)
+        const actualMovie = state.movies.find(m => m.title === state.selectedMovie)
         const newMovie = {
-            watchedBy: watchers,
-            [`rate${personLoggedIn}`]: rating,
-            thoughts: thoughts,
-            tags: tags
+            watchedBy: state.watchers,
+            [`rate${personLoggedIn}`]: state.rating,
+            thoughts: state.thoughts,
+            tags: state.tags
         }
         alert(JSON.stringify(actualMovie))
         alert(JSON.stringify(newMovie))
     }
     function isNameChecked(name) {
-        return watchers.includes(name)
+        return state.watchers.includes(name)
     }
 
     async function handleChangeWatchers(name){
         if(isNameChecked(name)){
-            await setWatchers(watchers.filter(w => w !== name))
+            await setState({...state, watchers: state.watchers.filter(w => w !== name) })
         } else {
-            await setWatchers(watchers.concat([name]))
+            await setState({...state, watchers: state.watchers.concat([name]) })
         }
     }
     function handleDeleteTag(event){
-        setTags(tags.filter(t => t !== event.currentTarget.id))
+        setState({...state, tags: state.tags.filter(t => t !== event.currentTarget.id)})
     }
     function handleAddTag() {
-        if(newTag) setTags(tags.concat(newTag))
-        setNewTag('')
+        if(state.newTag) setState({...state, newTag: '', tags: state.tags.concat(state.newTag) })
     }
     function handleChangeTag(event) {
-        setNewTag(event.target.value)
+        setState({...state, newTag: event.target.value})
     }
     function handleRatingChange (event) {
         let value = 0;
         if(event.target.value > 0 ){
             value = event.target.value > 10? 10 : event.target.value.replace(/^0+/, '')
         }
-        setRating(value)
+        setState({...state, rating: value})
     }
     function handleThoughtsChange (event) {
-        setRating(event.target.value)
+        setState({...state, thoughts: event.target.value})
     }
     function displayCheckbox(name) {
         return <FormControlLabel
@@ -107,11 +108,11 @@ export function Bistro () {
         />;
     }
     function displayMovie (title) {
-        const event = movies.find(m => m.title === title)
+        const event = state.movies.find(m => m.title === title)
         if (!event) return
         return <Card className={'bistroMovieCard'}>
             <CardHeader
-                title={selectedMovie}
+                title={state.selectedMovie}
             />
             <CardContent>
                 <Grid container>
@@ -122,7 +123,7 @@ export function Bistro () {
                             id="rating"
                             label="Your rating"
                             onChange={handleRatingChange}
-                            value={rating}
+                            value={state.rating}
                             inputProps={{ min: "0", max: "10", step: "0.5"}}
                             InputProps={{ endAdornment:<InputAdornment position="end">/10</InputAdornment>}}
                         />
@@ -156,7 +157,7 @@ export function Bistro () {
                         <TextField
                             id="tag"
                             label="Tag"
-                            value={newTag}
+                            value={state.newTag}
                             onChange={handleChangeTag}
                         />
                     </Grid>
@@ -168,7 +169,7 @@ export function Bistro () {
                     <Grid item xs={12}>
                         {displayVerticalSpace(25)}
                         <div className={'tags'}>
-                            {tags.map(t => {
+                            {state.tags.map(t => {
                                 return <div className={'chips'}>
                                     <Chip
                                         label={t}
@@ -197,7 +198,7 @@ export function Bistro () {
         </Card>
     }
     function generateMovieItem(movie) {
-        return (<ListItem button onClick={() => setSelectedMovie((movie.title))}>
+        return (<ListItem button onClick={() => setState({...state, selectedMovie: movie.title})}>
             <ListItemText  primary={movie.title} />
         </ListItem>)
     }
@@ -207,12 +208,23 @@ export function Bistro () {
             <Box my={4}>
                 <Grid container spacing={2}>
                     <Grid item xs={4}>
-                        <List component="nav" aria-label="main mailbox folders" style={{maxHeight: '50vw', overflow: 'auto'}}>
-                            {movies.map(generateMovieItem)}
+                        <Button onClick={clickCreateMovie} fullWidth variant="contained" color="primary">
+                            Create Movie
+                        </Button>
+                        {displayVerticalSpace(15)}
+                        <Divider/>
+                        {displayVerticalSpace(15)}
+                        <FormLabel component={'label'}>Select Movie</FormLabel>
+                        <List
+                            component="nav"
+                            aria-label="main mailbox folders"
+                            style={{maxHeight: '50vw', overflow: 'auto'}}
+                        >
+                            {state.movies.map(generateMovieItem)}
                         </List>
                     </Grid>
                     <Grid item xs={8}>
-                        {displayMovie(selectedMovie)}
+                        {displayMovie(state.selectedMovie)}
                     </Grid>
                 </Grid>
             </Box>
