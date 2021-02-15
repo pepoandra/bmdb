@@ -13,7 +13,7 @@ import FormatListNumberedOutlinedIcon from '@material-ui/icons/FormatListNumbere
 export function Rules () {
     return (
         <Container maxWidth="lg">
-            <Box my={12}>
+            <Box my={4}>
                 <Grid container>
                     <Grid item xs={6}>
                         <Card className={'rulesCard'}>

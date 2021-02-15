@@ -59,7 +59,7 @@ const useStyles = makeStyles({
 export function Scores () {
     return (
         <Container maxWidth="lg">
-            <Box my={12}>
+            <Box my={4}>
                 <Grid container>
                     <Grid item xs={6}>
                         <Card className={'rulesCard'}>

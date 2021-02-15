@@ -20,6 +20,7 @@ import Grid from '@material-ui/core/Grid';
 import ThumbUpAltTwoToneIcon from '@material-ui/icons/ThumbUpAltTwoTone';
 import ThumbDownAltTwoToneIcon from '@material-ui/icons/ThumbDownAltTwoTone';
  import {displayVerticalSpace} from "../helpers/helpers";
+ import Chip from "@material-ui/core/Chip";
 const { MovieDb } = require('moviedb-promise')
 const moviedb = new MovieDb('e8bb48788d1a95090608148c98ab71d5')
 
@@ -30,7 +31,6 @@ function CalendarComponent () {
   const [persons, setPersons] = useState([])
 
   const [selectedMovie, setSelectedMovie] = useState('')
-  const [suggestedBy, setSuggestedBy] = useState('')
 
   const [overview, setOverview] = useState('')
   const [poster, setPoster] = useState('')
@@ -66,16 +66,12 @@ function CalendarComponent () {
     await setSelectedMovie(event.title)
     getMovieInfo(event.title)
     const person = persons.find(p => p.id === event.person)
-    if (person) {
-      setSuggestedBy(person.name)
-    } else {
-      setSuggestedBy('idk, lol')
-    }
     openModal()
   }
   async function fetchMovies () {
-    const apiData = await API.graphql({ query: listMovies })
-    setMovies(apiData.data.listMovies.items)
+      const apiData = await API.graphql({ query: listMovies })
+      setMovies(apiData.data.listMovies.items)
+
   }
   async function fetchPersons () {
     const apiData = await API.graphql({ query: listPersons })
@@ -98,19 +94,31 @@ function CalendarComponent () {
         <CardHeader
             avatar={
                 <Avatar style={avatarStyles}>
-                    {suggestedBy}
+                    {event.pickedBy}
                 </Avatar>
             }
-            action={
-                <IconButton aria-label="settings">
-                    <MoreVertIcon />
-                </IconButton>
-            }
             title={selectedMovie}
-            subheader={`Picked by ${suggestedBy}`}
         />
                 <CardContent>
                     <Grid container>
+                        <Grid item xs={12}>
+                            {`Corked by: ${event.corkedBy}   Picked by: ${event.pickedBy}`}
+                        </Grid>
+                        <Grid item xs={12}>
+                            {`Seb: ${event.rateSeb}   Amy: ${event.rateAmy}   Shane: ${event.rateShane}    Dov: ${event.rateDov}`}
+                        </Grid>
+                        <Grid item xs={6}>
+                            <div className={'tags'}>
+                                {event.tags.map(t => {
+                                    return <div className={'chips'}>
+                                        <Chip
+                                            label={t}
+                                            color="primary"
+                                        />
+                                    </div>
+                                })}
+                            </div>
+                        </Grid>
                         <Grid item xs={12}>
                             <Typography variant="body2" color="textPrimary" component="p">
                                 {overview}
@@ -118,7 +126,7 @@ function CalendarComponent () {
                         </Grid>
                         {displayVerticalSpace(15)}
                         <Grid item xs={12} style={{textAlign: "center"}}>
-                            <div>{event.best} <ThumbUpAltTwoToneIcon style={{fill: bestColor}}/>  <ThumbDownAltTwoToneIcon style={{fill: worstColor}}/> {event.worst} </div>
+
                         </Grid>
                         {displayVerticalSpace(8)}
                         <Grid item xs={12} style={{textAlign: "center"}}>
@@ -144,13 +152,10 @@ function CalendarComponent () {
               localizer={localizer}
               events={movies.map((m, id) => {
                 return {
-                  id,
-                  title: m.title,
-                  worst: m.worst || 0,
-                  best: m.best || 0,
-                  start: setHours(new Date(m.date)),
-                  end: setHours(new Date(m.date)),
-                  person: m.personID
+                    id,
+                    start: setHours(new Date(m.date)),
+                    end: setHours(new Date(m.date)),
+                    ...m,
                 }
               })}
               startAccessor="start"

@@ -99,7 +99,7 @@
 
 .tags {
   display: flex;
-  justify-content: start ;
+  justify-content: flex-start ;
   max-width: 400px;
   padding: 0;
 }
@@ -111,6 +111,6 @@
 .bistroMovieCard {
   display: block;
   transitionDuration: 0.3s;
-  height: 50vw;
+  height: 53vw;
 }
 
