@@ -1,127 +1,21 @@
 /* eslint-disable */
 // this is an auto generated file. This will be overwritten
 
-export const getPerson = /* GraphQL */ `
-  query GetPerson($id: ID!) {
-    getPerson(id: $id) {
-      id
-      name
-      _version
-      _deleted
-      _lastChangedAt
-      createdAt
-      updatedAt
-      Movies {
-        items {
-          id
-          title
-          date
-          personID
-          worst
-          best
-          _version
-          _deleted
-          _lastChangedAt
-          createdAt
-          updatedAt
-        }
-        nextToken
-        startedAt
-      }
-    }
-  }
-`;
-export const listPersons = /* GraphQL */ `
-  query ListPersons(
-    $filter: ModelPersonFilterInput
-    $limit: Int
-    $nextToken: String
-  ) {
-    listPersons(filter: $filter, limit: $limit, nextToken: $nextToken) {
-      items {
-        id
-        name
-        _version
-        _deleted
-        _lastChangedAt
-        createdAt
-        updatedAt
-        Movies {
-          items {
-            id
-            title
-            date
-            personID
-            worst
-            best
-            _version
-            _deleted
-            _lastChangedAt
-            createdAt
-            updatedAt
-          }
-          nextToken
-          startedAt
-        }
-      }
-      nextToken
-      startedAt
-    }
-  }
-`;
-export const syncPeople = /* GraphQL */ `
-  query SyncPeople(
-    $filter: ModelPersonFilterInput
-    $limit: Int
-    $nextToken: String
-    $lastSync: AWSTimestamp
-  ) {
-    syncPeople(
-      filter: $filter
-      limit: $limit
-      nextToken: $nextToken
-      lastSync: $lastSync
-    ) {
-      items {
-        id
-        name
-        _version
-        _deleted
-        _lastChangedAt
-        createdAt
-        updatedAt
-        Movies {
-          items {
-            id
-            title
-            date
-            personID
-            worst
-            best
-            _version
-            _deleted
-            _lastChangedAt
-            createdAt
-            updatedAt
-          }
-          nextToken
-          startedAt
-        }
-      }
-      nextToken
-      startedAt
-    }
-  }
-`;
 export const getMovie = /* GraphQL */ `
   query GetMovie($id: ID!) {
     getMovie(id: $id) {
       id
       title
+      thoughts
+      tags
+      rateSeb
+      rateAmy
+      rateDov
+      rateShane
+      corkedBy
+      pickedBy
+      watchedBy
       date
-      personID
-      worst
-      best
       _version
       _deleted
       _lastChangedAt
@@ -140,10 +34,16 @@ export const listMovies = /* GraphQL */ `
       items {
         id
         title
+        thoughts
+        tags
+        rateSeb
+        rateAmy
+        rateDov
+        rateShane
+        corkedBy
+        pickedBy
+        watchedBy
         date
-        personID
-        worst
-        best
         _version
         _deleted
         _lastChangedAt
@@ -171,10 +71,144 @@ export const syncMovies = /* GraphQL */ `
       items {
         id
         title
+        thoughts
+        tags
+        rateSeb
+        rateAmy
+        rateDov
+        rateShane
+        corkedBy
+        pickedBy
+        watchedBy
         date
-        personID
-        worst
-        best
+        _version
+        _deleted
+        _lastChangedAt
+        createdAt
+        updatedAt
+      }
+      nextToken
+      startedAt
+    }
+  }
+`;
+export const getPerson = /* GraphQL */ `
+  query GetPerson($id: ID!) {
+    getPerson(id: $id) {
+      id
+      name
+      _version
+      _deleted
+      _lastChangedAt
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const listPersons = /* GraphQL */ `
+  query ListPersons(
+    $filter: ModelPersonFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    listPersons(filter: $filter, limit: $limit, nextToken: $nextToken) {
+      items {
+        id
+        name
+        _version
+        _deleted
+        _lastChangedAt
+        createdAt
+        updatedAt
+      }
+      nextToken
+      startedAt
+    }
+  }
+`;
+export const syncPeople = /* GraphQL */ `
+  query SyncPeople(
+    $filter: ModelPersonFilterInput
+    $limit: Int
+    $nextToken: String
+    $lastSync: AWSTimestamp
+  ) {
+    syncPeople(
+      filter: $filter
+      limit: $limit
+      nextToken: $nextToken
+      lastSync: $lastSync
+    ) {
+      items {
+        id
+        name
+        _version
+        _deleted
+        _lastChangedAt
+        createdAt
+        updatedAt
+      }
+      nextToken
+      startedAt
+    }
+  }
+`;
+export const getSuggestion = /* GraphQL */ `
+  query GetSuggestion($id: ID!) {
+    getSuggestion(id: $id) {
+      id
+      name
+      movie
+      description
+      _version
+      _deleted
+      _lastChangedAt
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const listSuggestions = /* GraphQL */ `
+  query ListSuggestions(
+    $filter: ModelSuggestionFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    listSuggestions(filter: $filter, limit: $limit, nextToken: $nextToken) {
+      items {
+        id
+        name
+        movie
+        description
+        _version
+        _deleted
+        _lastChangedAt
+        createdAt
+        updatedAt
+      }
+      nextToken
+      startedAt
+    }
+  }
+`;
+export const syncSuggestions = /* GraphQL */ `
+  query SyncSuggestions(
+    $filter: ModelSuggestionFilterInput
+    $limit: Int
+    $nextToken: String
+    $lastSync: AWSTimestamp
+  ) {
+    syncSuggestions(
+      filter: $filter
+      limit: $limit
+      nextToken: $nextToken
+      lastSync: $lastSync
+    ) {
+      items {
+        id
+        name
+        movie
+        description
         _version
         _deleted
         _lastChangedAt

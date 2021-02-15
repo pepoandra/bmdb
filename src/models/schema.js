@@ -1,5 +1,120 @@
 export const schema = {
     "models": {
+        "Movie": {
+            "name": "Movie",
+            "fields": {
+                "id": {
+                    "name": "id",
+                    "isArray": false,
+                    "type": "ID",
+                    "isRequired": true,
+                    "attributes": []
+                },
+                "title": {
+                    "name": "title",
+                    "isArray": false,
+                    "type": "String",
+                    "isRequired": false,
+                    "attributes": []
+                },
+                "thoughts": {
+                    "name": "thoughts",
+                    "isArray": false,
+                    "type": "String",
+                    "isRequired": false,
+                    "attributes": []
+                },
+                "tags": {
+                    "name": "tags",
+                    "isArray": true,
+                    "type": "String",
+                    "isRequired": false,
+                    "attributes": [],
+                    "isArrayNullable": true
+                },
+                "rateSeb": {
+                    "name": "rateSeb",
+                    "isArray": false,
+                    "type": "Float",
+                    "isRequired": false,
+                    "attributes": []
+                },
+                "rateAmy": {
+                    "name": "rateAmy",
+                    "isArray": false,
+                    "type": "Float",
+                    "isRequired": false,
+                    "attributes": []
+                },
+                "rateDov": {
+                    "name": "rateDov",
+                    "isArray": false,
+                    "type": "Float",
+                    "isRequired": false,
+                    "attributes": []
+                },
+                "rateShane": {
+                    "name": "rateShane",
+                    "isArray": false,
+                    "type": "Float",
+                    "isRequired": false,
+                    "attributes": []
+                },
+                "corkedBy": {
+                    "name": "corkedBy",
+                    "isArray": false,
+                    "type": "String",
+                    "isRequired": false,
+                    "attributes": []
+                },
+                "pickedBy": {
+                    "name": "pickedBy",
+                    "isArray": false,
+                    "type": "String",
+                    "isRequired": false,
+                    "attributes": []
+                },
+                "watchedBy": {
+                    "name": "watchedBy",
+                    "isArray": true,
+                    "type": "String",
+                    "isRequired": false,
+                    "attributes": [],
+                    "isArrayNullable": true
+                },
+                "date": {
+                    "name": "date",
+                    "isArray": false,
+                    "type": "AWSDateTime",
+                    "isRequired": false,
+                    "attributes": []
+                }
+            },
+            "syncable": true,
+            "pluralName": "Movies",
+            "attributes": [
+                {
+                    "type": "model",
+                    "properties": {}
+                },
+                {
+                    "type": "auth",
+                    "properties": {
+                        "rules": [
+                            {
+                                "allow": "public",
+                                "operations": [
+                                    "create",
+                                    "update",
+                                    "delete",
+                                    "read"
+                                ]
+                            }
+                        ]
+                    }
+                }
+            ]
+        },
         "Person": {
             "name": "Person",
             "fields": {
@@ -9,20 +124,6 @@ export const schema = {
                     "type": "ID",
                     "isRequired": true,
                     "attributes": []
-                },
-                "Movies": {
-                    "name": "Movies",
-                    "isArray": true,
-                    "type": {
-                        "model": "Movie"
-                    },
-                    "isRequired": false,
-                    "attributes": [],
-                    "isArrayNullable": true,
-                    "association": {
-                        "connectionType": "HAS_MANY",
-                        "associatedWith": "personID"
-                    }
                 },
                 "name": {
                     "name": "name",
@@ -57,8 +158,8 @@ export const schema = {
                 }
             ]
         },
-        "Movie": {
-            "name": "Movie",
+        "Suggestion": {
+            "name": "Suggestion",
             "fields": {
                 "id": {
                     "name": "id",
@@ -67,57 +168,34 @@ export const schema = {
                     "isRequired": true,
                     "attributes": []
                 },
-                "title": {
-                    "name": "title",
+                "name": {
+                    "name": "name",
                     "isArray": false,
                     "type": "String",
                     "isRequired": false,
                     "attributes": []
                 },
-                "date": {
-                    "name": "date",
+                "movie": {
+                    "name": "movie",
                     "isArray": false,
-                    "type": "AWSDateTime",
+                    "type": "String",
                     "isRequired": false,
                     "attributes": []
                 },
-                "personID": {
-                    "name": "personID",
+                "description": {
+                    "name": "description",
                     "isArray": false,
-                    "type": "ID",
-                    "isRequired": false,
-                    "attributes": []
-                },
-                "worst": {
-                    "name": "worst",
-                    "isArray": false,
-                    "type": "Int",
-                    "isRequired": false,
-                    "attributes": []
-                },
-                "best": {
-                    "name": "best",
-                    "isArray": false,
-                    "type": "Int",
+                    "type": "String",
                     "isRequired": false,
                     "attributes": []
                 }
             },
             "syncable": true,
-            "pluralName": "Movies",
+            "pluralName": "Suggestions",
             "attributes": [
                 {
                     "type": "model",
                     "properties": {}
-                },
-                {
-                    "type": "key",
-                    "properties": {
-                        "name": "byPerson",
-                        "fields": [
-                            "personID"
-                        ]
-                    }
                 },
                 {
                     "type": "auth",
@@ -140,5 +218,5 @@ export const schema = {
     },
     "enums": {},
     "nonModels": {},
-    "version": "f1f2f1f09b0572618e7010c3957a409d"
+    "version": "da294af3c9f50ab46cb1913dcebf4d17"
 };
