@@ -17,8 +17,7 @@ import CardContent from '@material-ui/core/CardContent';
 import CardMedia from '@material-ui/core/CardMedia';
 import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
-import ThumbUpAltTwoToneIcon from '@material-ui/icons/ThumbUpAltTwoTone';
-import ThumbDownAltTwoToneIcon from '@material-ui/icons/ThumbDownAltTwoTone';
+
  import {displayVerticalSpace} from "../helpers/helpers";
  import Chip from "@material-ui/core/Chip";
 const { MovieDb } = require('moviedb-promise')
@@ -71,7 +70,6 @@ function CalendarComponent () {
   async function fetchMovies () {
       const apiData = await API.graphql({ query: listMovies })
       setMovies(apiData.data.listMovies.items)
-
   }
   async function fetchPersons () {
     const apiData = await API.graphql({ query: listPersons })

@@ -16,20 +16,44 @@ import FormGroup from '@material-ui/core/FormGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
 import Typography from "@material-ui/core/Typography";
+import Modal from '@material-ui/core/Modal';
+import { makeStyles } from '@material-ui/core/styles';
+import {CreateMovie} from "./CreateMovie";
+import Autocomplete from "@material-ui/lab/Autocomplete";
+import {NAMES} from "../helpers/constants";
+
+
 
 const personLoggedIn = 'Seb'
+const initialState = {
+    movies: [],
+    selectedMovie: '',
+    rating: 0,
+    tags: '',
+    newTag: '',
+    watchers: '',
+    thoughts: '',
+    isCreateModalOpen: false,
+}
+
+const useStyles = makeStyles((theme) => ({
+    modal: {
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        top: '50%',
+        left: '50%',
+    },
+    paper: {
+        position: 'absolute',
+        width: 600,
+        boxShadow: theme.shadows[5],
+    },
+}));
 
 export function Bistro () {
-    const [state, setState] = useState({
-        movies: [],
-        selectedMovie: '',
-        rating: 0,
-        tags: '',
-        newTag: '',
-        watchers: '',
-        thoughts: '',
-        isCreateModalOpen: false,
-    })
+    const [state, setState] = useState(initialState)
+    const classes = useStyles();
 
     useEffect(() => {
         fetchMovies()
@@ -46,10 +70,19 @@ export function Bistro () {
             selectedMovie: fetchedMovie[0].title,
             watchers: fetchedMovie[0].watchedBy,
             thoughts: fetchedMovie[0].thoughts,
+            corkedBy: fetchedMovie[0].corkedBy,
+            pickedBy: fetchedMovie[0].pickedBy
         })
     }
-
-
+    function selectCorker(event) {
+        setState({...state, corkedBy: event.target.value})
+    }
+    function selectPicker(event) {
+        setState({...state, pickedBy: event.target.value})
+    }
+    function handleCloseCreateMovie() {
+        setState({...state, isCreateModalOpen: false})
+    }
     function clickCreateMovie() {
         setState({...state, isCreateModalOpen: !state.isCreateModalOpen })
     }
@@ -127,7 +160,43 @@ export function Bistro () {
                             inputProps={{ min: "0", max: "10", step: "0.5"}}
                             InputProps={{ endAdornment:<InputAdornment position="end">/10</InputAdornment>}}
                         />
-                        {displayVerticalSpace(25)}
+                    </Grid>
+                    <Grid item xs={10}></Grid>
+                    <Grid item xs={5}>
+                        <Autocomplete
+                            options={NAMES.map(n => {
+                                return {
+                                    title: n,
+                                }
+                            })}
+                            getOptionLabel={(option) => option.title}
+                            id="corkedBy"
+                            autoComplete
+                            onChange={selectCorker}
+                            clearOnEscape
+                            includeInputInList
+                            defaultvalue={state.corkedBy}
+                            renderInput={(params) => <TextField value={state.corkedBy} {...params} label="Corked by" margin="normal" />}
+                        />
+                    </Grid>
+                    <Grid item xs={2}>
+                        {displayVerticalSpace(90)}
+                    </Grid>
+                    <Grid item xs={5}>
+                        <Autocomplete
+                            options={NAMES.map(n => {
+                                return {
+                                    title: n,
+                                }
+                            })}
+                            getOptionLabel={(option) => option.title}
+                            id="pickedBy"
+                            onChange={selectPicker}
+                            autoComplete
+                            clearOnEscape
+                            includeInputInList
+                            renderInput={(params) => <TextField {...params} label="Picked by" margin="normal" />}
+                        />
                     </Grid>
                     <Grid item xs={12}>
                         <TextField
@@ -228,7 +297,22 @@ export function Bistro () {
                     </Grid>
                 </Grid>
             </Box>
+            <div>
+                <Modal
+                    open={state.isCreateModalOpen}
+                    onClose={handleCloseCreateMovie}
+                    aria-labelledby="simple-modal-title"
+                    aria-describedby="simple-modal-description"
+                    className={classes.modal}
+
+                >
+                    <div className={classes.paper}>
+                        <CreateMovie/>
+                    </div>
+                </Modal>
+            </div>
         </Container>
+
     )
 }
 
