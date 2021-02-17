@@ -25,9 +25,10 @@ import Grow from '@material-ui/core/Grow';
 import {Alert} from "@material-ui/lab";
 import moment from 'moment'
 import {updateMovie, deleteMovie} from "../graphql/mutations";
+import { withAuthenticator, AmplifySignOut } from '@aws-amplify/ui-react';
+import { Auth } from 'aws-amplify';
 
 
-const personLoggedIn = 'Seb'
 const initialState = {
     movies: [],
     selectedMovie: '',
@@ -40,6 +41,8 @@ const initialState = {
     savedSuccess: false,
     savedError: false,
     date: '',
+    errorMsg: '',
+    personLoggedIn: ''
 }
 
 const useStyles = makeStyles((theme) => ({
@@ -60,19 +63,23 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-export function Bistro () {
+function Bistro () {
     const [state, setState] = useState(initialState)
     const classes = useStyles();
 
     useEffect(() => {
         fetchMovies()
+        Auth.currentSession()
+            .then(data => setState({...state, personLoggedIn: data.idToken.payload.preferred_username}))
+            .catch(err => console.log(err));
     }, [])
     async function fetchMovies () {
         const apiData = await API.graphql({ query: listMovies })
         const fetchedMovies = apiData.data.listMovies.items;
-        await setState({...state, movies: fetchedMovies })
-        if(fetchedMovies.length > 0) onClickMovie(fetchedMovies[0].title)
-
+        if(fetchedMovies && fetchedMovies.length > 0){
+            await setState({...state, movies: fetchedMovies.filter(n => !n._deleted ) })
+            onClickMovie(fetchedMovies[0].title)
+        }
     }
 
     function onClickMovie(title) {
@@ -83,7 +90,7 @@ export function Bistro () {
             watchers: m.watchedBy,
             pickedBy: m.pickedBy,
             corkedBy: m.corkedBy,
-            rating: m[`rate${personLoggedIn}`],
+            rating: m[`rate${state.personLoggedIn}`],
             tags: m.tags,
             newTag: '',
             selectedMovie: m.title,
@@ -104,13 +111,17 @@ export function Bistro () {
         const actualMovie = state.movies.find(m => m.title === state.selectedMovie)
         const input = {
             id: actualMovie.id,
+            _version: actualMovie._version
         }
         try {
             const algo = await API.graphql(graphqlOperation(deleteMovie, {input: input }))
+            alert('success')
             setState({...state, savedSuccess: true})
             await fetchMovies();
         } catch (err) {
-            setState({...state, savedError: true})
+            alert(JSON.stringify(err.errors[0]))
+            alert((err.errors[0].errorType[0]))
+            setState({...state, savedError: true, errorMsg: err.message})
         }
         setTimeout(() => {
             setState({...state, savedSuccess: false, savedError: false})
@@ -123,21 +134,19 @@ export function Bistro () {
             watchedBy: state.watchers,
             pickedBy: state.pickedBy,
             corkedBy: state.corkedBy,
-            [`rate${personLoggedIn}`]: state.rating,
+            [`rate${state.personLoggedIn}`]: state.rating,
             thoughts: state.thoughts,
-            tags: state.tags.filter(t => !actualMovie.tags.includes(t)),
-            date: moment(new Date(state.date)).format()
+            tags: state.tags,
+            date: moment(new Date(state.date)).format(),
+            _version: actualMovie._version,
         }
         if (validateMovie(newMovie)) {
             try {
                 const algo = await API.graphql(graphqlOperation(updateMovie, {input: newMovie }))
                 await fetchMovies();
-                alert(JSON.stringify(algo))
                 setState({...state, savedSuccess: true})
             } catch (err) {
-                alert(JSON.stringify(err.stack))
                 setState({...state, savedError: true})
-
             }
             setTimeout(() => {
                 setState({...state, savedSuccess: false, savedError: false})
@@ -198,7 +207,7 @@ export function Bistro () {
     function displayAlert() {
         if(!(state.savedError || state.savedSuccess)) return
         const severity = state.savedSuccess? 'success' : 'error'
-        const msg = state.savedSuccess? 'Movie saved!' : "Uh, oh, that's no bueno"
+        const msg = state.savedSuccess? 'Movie saved!' : state.errorMsg
         return <Paper >
             <Alert variant="filled" severity={severity}>
                 {msg}
@@ -367,7 +376,7 @@ export function Bistro () {
     }
     return (
         <Container maxWidth="md">
-            <Typography variant={'h2'}>{personLoggedIn}</Typography>
+            <Typography variant={'h2'}>{state.personLoggedIn}</Typography>
             <Box my={4}>
                 <Grid container spacing={2}>
                     <Grid item xs={4}>
@@ -397,6 +406,7 @@ export function Bistro () {
                     aria-labelledby="simple-modal-title"
                     aria-describedby="simple-modal-description"
                     className={classes.modal}
+                    onEscapeKeyDown={handleCloseCreateMovie}
                 >
                     <div className={classes.paper}>
                         <CreateMovie closeModal={handleCloseCreateMovie}/>
@@ -404,7 +414,7 @@ export function Bistro () {
                 </Modal>
             </div>
         </Container>
-
     )
 }
 
+export default withAuthenticator(Bistro);

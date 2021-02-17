@@ -15,7 +15,7 @@ import {Rules} from "./components/Rules";
 import {CalendarComponent} from "./components/Calendar";
 import {Scores} from "./components/Scores";
 import {Suggestions} from "./components/Suggestions";
-import {Bistro} from "./components/Bistro";
+import Bistro from "./components/Bistro";
 
 const useStyles = makeStyles((theme) =>
     createStyles({

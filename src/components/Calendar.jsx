@@ -65,10 +65,11 @@ function CalendarComponent () {
     const person = persons.find(p => p.id === event.person)
     openModal()
   }
-  async function fetchMovies () {
-      const apiData = await API.graphql({ query: listMovies })
-      setMovies(apiData.data.listMovies.items)
-  }
+    async function fetchMovies () {
+        const apiData = await API.graphql({ query: listMovies })
+        const fetchedMovies = apiData.data.listMovies.items;
+        await setMovies(fetchedMovies.filter(n => !n._deleted ))
+    }
   async function fetchPersons () {
     const apiData = await API.graphql({ query: listPersons })
     setPersons(apiData.data.listPersons.items)

@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react'
-import {createMovie, createSuggestion} from "../graphql/mutations";
-import {Button, Card, Container, FormLabel, InputAdornment, Link, TextField} from "@material-ui/core";
+import React, { useState } from 'react'
+import {createMovie} from "../graphql/mutations";
+import {Button, Card, FormLabel, InputAdornment, TextField} from "@material-ui/core";
 import CardHeader from "@material-ui/core/CardHeader";
 import Grid from "@material-ui/core/Grid";
 import CardContent from "@material-ui/core/CardContent";
@@ -28,7 +28,7 @@ const initialState = {
     isCreateModalOpen: false,
     corkedBy: '',
     pickedBy: '',
-    date: moment(new Date()).format('YYYY-MM-DDTHH:mm')
+    date: moment(new Date()).format('YYYY-MM-DDTHH:mm'),
 }
 
 export function CreateMovie (props) {
@@ -69,6 +69,9 @@ export function CreateMovie (props) {
 
     function handleChangeTag(event) {
         setState({...state, newTag: event.target.value})
+    }
+    function cancelMovieCreation() {
+        props.closeModal()
     }
     async function saveMovie() {
         const newMovie = {
@@ -257,7 +260,15 @@ export function CreateMovie (props) {
                     <Divider />
                     {displayVerticalSpace(10)}
                 </Grid>
-                <Grid item xs={12}>
+                <Grid item xs={4}>
+                    <Button onClick={cancelMovieCreation} fullWidth variant="contained" color="secondary">
+                        Cancel
+                    </Button>
+                </Grid>
+                <Grid item xs={1}>
+
+                </Grid>
+                <Grid item xs={7}>
                     <Button onClick={saveMovie} fullWidth variant="contained" color="primary">
                         Save
                     </Button>
