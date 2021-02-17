@@ -42,7 +42,6 @@ const initialState = {
     savedError: false,
     date: '',
     errorMsg: '',
-    personLoggedIn: ''
 }
 
 const useStyles = makeStyles((theme) => ({
@@ -65,13 +64,17 @@ const useStyles = makeStyles((theme) => ({
 
 function Bistro () {
     const [state, setState] = useState(initialState)
+    const [personLoggedIn, setPersonLoggedIn] = useState('')
+
     const classes = useStyles();
 
     useEffect(() => {
         fetchMovies()
-        Auth.currentSession()
-            .then(data => setState({...state, personLoggedIn: data.idToken.payload.preferred_username}))
-            .catch(err => console.log(err));
+    }, [])
+
+    useEffect(async ()=>{
+        const data =  await Auth.currentSession()
+        await setPersonLoggedIn(data.idToken.payload.preferred_username)
     }, [])
     async function fetchMovies () {
         const apiData = await API.graphql({ query: listMovies })
@@ -90,7 +93,7 @@ function Bistro () {
             watchers: m.watchedBy,
             pickedBy: m.pickedBy,
             corkedBy: m.corkedBy,
-            rating: m[`rate${state.personLoggedIn}`],
+            rating: m[`rate${personLoggedIn}`],
             tags: m.tags,
             newTag: '',
             selectedMovie: m.title,
@@ -134,7 +137,7 @@ function Bistro () {
             watchedBy: state.watchers,
             pickedBy: state.pickedBy,
             corkedBy: state.corkedBy,
-            [`rate${state.personLoggedIn}`]: state.rating,
+            [`rate${personLoggedIn}`]: state.rating,
             thoughts: state.thoughts,
             tags: state.tags,
             date: moment(new Date(state.date)).format(),
@@ -376,7 +379,7 @@ function Bistro () {
     }
     return (
         <Container maxWidth="md">
-            <Typography variant={'h2'}>{state.personLoggedIn}</Typography>
+            <Typography variant={'h2'}>{personLoggedIn}</Typography>
             <Box my={4}>
                 <Grid container spacing={2}>
                     <Grid item xs={4}>
@@ -413,6 +416,9 @@ function Bistro () {
                     </div>
                 </Modal>
             </div>
+            <AmplifySignOut>
+
+            </AmplifySignOut>
         </Container>
     )
 }
