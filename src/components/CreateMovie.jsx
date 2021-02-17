@@ -16,7 +16,6 @@ import {API, graphqlOperation} from "aws-amplify";
 import moment from "moment";
 
 
-const personLoggedIn = 'Seb'
 const initialState = {
     movies: [],
     title: '',
@@ -33,6 +32,7 @@ const initialState = {
 
 export function CreateMovie (props) {
     const [state, setState] = useState(initialState)
+    const personLoggedIn = props.personLoggedIn;
 
     async function handleChangeWatchers(name){
         if(isNameChecked(name)){

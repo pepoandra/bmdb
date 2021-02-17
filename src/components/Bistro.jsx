@@ -27,6 +27,7 @@ import moment from 'moment'
 import {updateMovie, deleteMovie} from "../graphql/mutations";
 import { withAuthenticator, AmplifySignOut } from '@aws-amplify/ui-react';
 import { Auth } from 'aws-amplify';
+import {NotFound} from "./NotFound";
 
 
 const initialState = {
@@ -37,7 +38,6 @@ const initialState = {
     newTag: '',
     watchers: '',
     thoughts: '',
-    isCreateModalOpen: false,
     savedSuccess: false,
     savedError: false,
     date: '',
@@ -65,12 +65,12 @@ const useStyles = makeStyles((theme) => ({
 function Bistro () {
     const [state, setState] = useState(initialState)
     const [personLoggedIn, setPersonLoggedIn] = useState('')
-
+    const [isCreateModalOpen, setIsCreateModalOpen] = useState(false)
     const classes = useStyles();
 
     useEffect(() => {
         fetchMovies()
-    }, [])
+    }, [isCreateModalOpen, state.savedSuccess])
 
     useEffect(async ()=>{
         const data =  await Auth.currentSession()
@@ -104,10 +104,10 @@ function Bistro () {
     }
 
     function handleCloseCreateMovie() {
-        setState({...state, isCreateModalOpen: false})
+        setIsCreateModalOpen(false)
     }
     function clickCreateMovie() {
-        setState({...state, isCreateModalOpen: !state.isCreateModalOpen })
+        setIsCreateModalOpen(true)
     }
 
     async function handleDeleteMovie() {
@@ -146,6 +146,7 @@ function Bistro () {
         if (validateMovie(newMovie)) {
             try {
                 const algo = await API.graphql(graphqlOperation(updateMovie, {input: newMovie }))
+                // setState({...state, movies: state.movies.concat([algo.data.updateMovie])})
                 await fetchMovies();
                 setState({...state, savedSuccess: true})
             } catch (err) {
@@ -377,7 +378,8 @@ function Bistro () {
             <ListItemText  primary={movie.title} />
         </ListItem>)
     }
-    return (
+    return !NAMES.includes(personLoggedIn)? <NotFound/> :
+        (
         <Container maxWidth="md">
             <Typography variant={'h2'}>{personLoggedIn}</Typography>
             <Box my={4}>
@@ -405,14 +407,14 @@ function Bistro () {
             </Box>
             <div>
                 <Modal
-                    open={state.isCreateModalOpen}
+                    open={isCreateModalOpen}
                     aria-labelledby="simple-modal-title"
                     aria-describedby="simple-modal-description"
                     className={classes.modal}
                     onEscapeKeyDown={handleCloseCreateMovie}
                 >
                     <div className={classes.paper}>
-                        <CreateMovie closeModal={handleCloseCreateMovie}/>
+                        <CreateMovie closeModal={handleCloseCreateMovie} personLoggedIn={personLoggedIn}/>
                     </div>
                 </Modal>
             </div>
