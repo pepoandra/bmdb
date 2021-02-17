@@ -7,7 +7,7 @@ import Grid from "@material-ui/core/Grid";
 import CardContent from "@material-ui/core/CardContent";
 import {displayVerticalSpace} from "../helpers/helpers"; // Tell webpack this JS file uses this image
 import { listSuggestions} from '../graphql/queries'
-import { createSuggestion} from "../graphql/mutations";
+import { createSuggestion } from "../graphql/mutations";
 import { API, graphqlOperation } from 'aws-amplify'
 
 export function Suggestions () {

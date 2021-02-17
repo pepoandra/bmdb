@@ -1,30 +1,27 @@
  import React, { useState, useEffect } from 'react'
 import '../App.css'
-import { API } from 'aws-amplify'
+import {API, graphqlOperation} from 'aws-amplify'
 import { listMovies, listPersons } from '../graphql/queries'
 import { Calendar, momentLocalizer } from 'react-big-calendar'
 import moment from 'moment'
 import 'react-big-calendar/lib/css/react-big-calendar.css'
 import Button from '@material-ui/core/Button';
-import Dialog, { DialogProps } from '@material-ui/core/Dialog';
+import Dialog  from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import Card from '@material-ui/core/Card';
-import MoreVertIcon from '@material-ui/icons/MoreVert';
 import Avatar from '@material-ui/core/Avatar';
-import IconButton from '@material-ui/core/IconButton';
 import CardHeader from '@material-ui/core/CardHeader';
 import CardContent from '@material-ui/core/CardContent';
 import CardMedia from '@material-ui/core/CardMedia';
 import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
-
- import {displayVerticalSpace} from "../helpers/helpers";
- import Chip from "@material-ui/core/Chip";
+import {displayVerticalSpace} from "../helpers/helpers";
+import Chip from "@material-ui/core/Chip";
 const { MovieDb } = require('moviedb-promise')
 const moviedb = new MovieDb('e8bb48788d1a95090608148c98ab71d5')
 
 const localizer = momentLocalizer(moment)
-
+const HOUR_OFFSET = 0;
 function CalendarComponent () {
   const [movies, setMovies] = useState([])
   const [persons, setPersons] = useState([])
@@ -39,6 +36,7 @@ function CalendarComponent () {
   function openModal () {
     setIsOpen(true)
   }
+
 
   function getMovieInfo (title) {
     moviedb.searchMovie({ query: title.split('(')[0], language: 'en' })
@@ -58,7 +56,7 @@ function CalendarComponent () {
   }, [])
 
   function setHours (d) {
-    d.setHours(d.getHours() + 5)
+    d.setHours(d.getHours() + HOUR_OFFSET)
     return d
   }
   async function handleEventClick (event) {
@@ -85,8 +83,6 @@ function CalendarComponent () {
         height: '70px',
         width: '70px',
         backgroundColor }
-    const bestColor = event.best > 0? 'green' : 'gray'
-    const worstColor = event.worst > 0? 'red' : 'gray'
 
       return <Card>
         <CardHeader

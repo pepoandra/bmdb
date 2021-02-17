@@ -100,12 +100,15 @@
 .tags {
   display: flex;
   justify-content: flex-start ;
-  max-width: 400px;
+  max-width: 600px;
   padding: 0;
+  display: flex;
+  flex-wrap: wrap;
 }
 
 .chips {
   margin: 5px;
+  height: 37px;
 }
 
 .bistroMovieCard {

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import Box from '@material-ui/core/Box';
+import {createMovie, createSuggestion} from "../graphql/mutations";
 import {Button, Card, Container, FormLabel, InputAdornment, Link, TextField} from "@material-ui/core";
 import CardHeader from "@material-ui/core/CardHeader";
 import Grid from "@material-ui/core/Grid";
@@ -11,7 +11,9 @@ import FormGroup from '@material-ui/core/FormGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
 import Autocomplete from '@material-ui/lab/Autocomplete';
-import {NAMES} from "../helpers/constants";
+import {DROPDOWN_OPTIONS, NAMES} from "../helpers/constants";
+import {API, graphqlOperation} from "aws-amplify";
+import moment from "moment";
 
 
 const personLoggedIn = 'Seb'
@@ -26,9 +28,10 @@ const initialState = {
     isCreateModalOpen: false,
     corkedBy: '',
     pickedBy: '',
+    date: moment(new Date()).format('YYYY-MM-DDTHH:mm')
 }
 
-export function CreateMovie () {
+export function CreateMovie (props) {
     const [state, setState] = useState(initialState)
 
     async function handleChangeWatchers(name){
@@ -47,6 +50,9 @@ export function CreateMovie () {
     function selectPicker(event, value) {
         setState({...state, pickedBy: value.title})
     }
+    function onChangeDate(event) {
+        setState({...state, date: moment(new Date(event.target.value)).format('YYYY-MM-DDTHH:mm') })
+    }
     function displayCheckbox(name) {
         return <FormControlLabel
             control={
@@ -61,11 +67,10 @@ export function CreateMovie () {
         />;
     }
 
-
     function handleChangeTag(event) {
         setState({...state, newTag: event.target.value})
     }
-    function saveMovie() {
+    async function saveMovie() {
         const newMovie = {
             title: state.title,
             watchedBy: state.watchers,
@@ -73,9 +78,23 @@ export function CreateMovie () {
             corkedBy: state.corkedBy,
             [`rate${personLoggedIn}`]: state.rating,
             thoughts: state.thoughts,
-            tags: state.tags
+            tags: state.tags,
+            date: moment(new Date(state.date)).format()
         }
-        alert(JSON.stringify(newMovie))
+
+        if (validateMovie(newMovie)) {
+            try {
+                await API.graphql(graphqlOperation(createMovie, {input: newMovie}))
+            } catch (err) {
+                alert(JSON.stringify(err.stack))
+            }
+        }
+        props.closeModal()
+    }
+    function validateMovie(movie){
+        if(!movie.title || state.movies.find(m => m.title === movie.title)) return false;
+        if(movie.watchedBy.length === 0 ) return false;
+        return true;
     }
     function handleRatingChange (event) {
         let value = 0;
@@ -87,20 +106,27 @@ export function CreateMovie () {
     function handleTitleChange(event) {
         setState({...state, title: event.target.value})
     }
-    function handleDeleteTag(event){
-        setState({...state, tags: state.tags.filter(t => t !== event.currentTarget.id)})
+    function handleOnDeleteTag(tag) {
+        const index = state.tags.findIndex(t => t === tag);
+        setState({...state, tags: state.tags.filter((t, i) => i !== index)})
     }
     function handleAddTag() {
         if(state.newTag) setState({...state, newTag: '', tags: state.tags.concat(state.newTag) })
     }
+    function keyPress(event){
+        if(event.keyCode === 13 && state.newTag){
+            setState({...state, newTag: '', tags: state.tags.concat(state.newTag)})
+        }
+    }
     function handleThoughtsChange (event) {
         setState({...state, thoughts: event.target.value})
     }
-    const options = NAMES.map(n => {
+    const options = DROPDOWN_OPTIONS.map(n => {
             return {
                 title: n,
             }
         })
+    const tagPlaceHolder = state.tags.length === 0? displayVerticalSpace(47) : null;
 
     return <Card className={'createMovieCard'}>
         <CardHeader
@@ -172,16 +198,28 @@ export function CreateMovie () {
                     />
                     {displayVerticalSpace(25)}
                 </Grid>
-                <Grid item xs={12}>
+                <Grid item xs={7}>
                     <FormLabel component={'label'}>Watched by</FormLabel>
                     <FormGroup row>
-                        {['Seb', 'Amy', 'Dov', 'Shane'].map(n => displayCheckbox(n))}
+                        {NAMES.map(n => displayCheckbox(n))}
                     </FormGroup>
+                </Grid>
+                <Grid container xs={5}>
+                    <TextField
+                        id="datetime-local"
+                        label="Date & Time"
+                        type="datetime-local"
+                        value={state.date}
+                        InputLabelProps={{
+                            shrink: true,
+                        }}
+                        onChange={onChangeDate}
+                    />
                 </Grid>
                 <Grid item xs={12}>
                     {displayVerticalSpace(10)}
                     <Divider />
-                    {displayVerticalSpace(10)}
+                    {displayVerticalSpace(15)}
                 </Grid>
                 <Grid item xs={5}>
                     <TextField
@@ -189,25 +227,26 @@ export function CreateMovie () {
                         label="Tag"
                         value={state.newTag}
                         onChange={handleChangeTag}
+                        onKeyDown={keyPress}
                     />
+                    {displayVerticalSpace(10)}
                 </Grid>
-                <Grid item xs={2}>
+                <Grid item xs={3}>
                     <Button fullWidth onClick={handleAddTag} variant="contained" color="primary">
                         Add Tag
                     </Button>
                 </Grid>
                 <Grid item xs={12}>
-                    {displayVerticalSpace(25)}
+                    {tagPlaceHolder}
                     <div className={'tags'}>
                         {state.tags.map(t => {
                             return <div className={'chips'}>
                                 <Chip
                                     label={t}
-                                    clickable
                                     id={t}
                                     value={t}
                                     color="primary"
-                                    onClick={handleDeleteTag}
+                                    onDelete={() => handleOnDeleteTag(t)}
                                 />
                             </div>
                         })}
