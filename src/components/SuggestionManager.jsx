@@ -11,7 +11,7 @@ import {API, graphqlOperation} from "aws-amplify";
 import { listSuggestions} from "../graphql/queries";
 import {displayVerticalSpace} from "../helpers/helpers";
 import {Alert} from "@material-ui/lab";
-import {updateMovie, deleteMovie, deleteSuggestion} from "../graphql/mutations";
+import {updateMovie, deleteMovie, deleteSuggestion, updateSuggestion} from "../graphql/mutations";
 import Typography from "@material-ui/core/Typography";
 
 const initialState = {
@@ -71,19 +71,21 @@ export function SuggestionManager () {
         }, 7000)
     }
     async function saveSuggestion() {
-        const actualSuggestion = state.suggestions.find(s => s.title === state.selectedSuggestion)
+        const actualSuggestion = state.suggestions.find(s => s.id === state.selectedSuggestion)
         const newSuggestion = {
             id: actualSuggestion.id,
             _version: actualSuggestion._version,
+            reply: state.reply
         }
 
         try {
-            const algo = await API.graphql(graphqlOperation(updateMovie, {input: newSuggestion }))
+            const algo = await API.graphql(graphqlOperation(updateSuggestion, {input: newSuggestion }))
             // setState({...state, movies: state.movies.concat([algo.data.updateMovie])})
             await fetchSuggestions();
             setState({...state, savedSuccess: true})
         } catch (err) {
-            setState({...state, savedError: true})
+            alert(JSON.stringify(err.errors[0]))
+            setState({...state, savedError: true })
         }
         setTimeout(() => {
             setState({...state, savedSuccess: false, savedError: false})
@@ -120,11 +122,11 @@ export function SuggestionManager () {
                         <Typography>
                             {suggestion.description}
                         </Typography>
+                        {displayVerticalSpace(20)}
                     </Grid>
                     <Grid item xs={12}>
                         <TextField
-                            id="thoughts"
-                            label="Bistro thoughts"
+                            label="Reply"
                             multiline
                             fullWidth
                             rows={4}
@@ -132,7 +134,7 @@ export function SuggestionManager () {
                             onChange={handleReplyChange}
                             value={suggestion.thoughts}
                         />
-                        {displayVerticalSpace(25)}
+                        {displayVerticalSpace(45)}
                     </Grid>
                     <Grid item xs={4}>
                         <Button fullWidth onClick={handleDeleteSuggestion} variant="contained" color="secondary">

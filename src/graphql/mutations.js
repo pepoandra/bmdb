@@ -137,6 +137,7 @@ export const createSuggestion = /* GraphQL */ `
       name
       movie
       description
+      reply
       _version
       _deleted
       _lastChangedAt
@@ -155,6 +156,7 @@ export const updateSuggestion = /* GraphQL */ `
       name
       movie
       description
+      reply
       _version
       _deleted
       _lastChangedAt
@@ -173,6 +175,7 @@ export const deleteSuggestion = /* GraphQL */ `
       name
       movie
       description
+      reply
       _version
       _deleted
       _lastChangedAt

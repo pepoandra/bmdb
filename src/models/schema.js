@@ -188,6 +188,13 @@ export const schema = {
                     "type": "String",
                     "isRequired": false,
                     "attributes": []
+                },
+                "reply": {
+                    "name": "reply",
+                    "isArray": false,
+                    "type": "String",
+                    "isRequired": false,
+                    "attributes": []
                 }
             },
             "syncable": true,
@@ -218,5 +225,5 @@ export const schema = {
     },
     "enums": {},
     "nonModels": {},
-    "version": "da294af3c9f50ab46cb1913dcebf4d17"
+    "version": "4d112071df44d3379262829433521ec1"
 };

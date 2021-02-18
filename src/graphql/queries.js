@@ -160,6 +160,7 @@ export const getSuggestion = /* GraphQL */ `
       name
       movie
       description
+      reply
       _version
       _deleted
       _lastChangedAt
@@ -180,6 +181,7 @@ export const listSuggestions = /* GraphQL */ `
         name
         movie
         description
+        reply
         _version
         _deleted
         _lastChangedAt
@@ -209,6 +211,7 @@ export const syncSuggestions = /* GraphQL */ `
         name
         movie
         description
+        reply
         _version
         _deleted
         _lastChangedAt

@@ -37,12 +37,22 @@ export function Suggestions () {
                 break
         }
     }
+    function bistroReply(suggestion) {
+        if(!suggestion.reply) return;
+        return <div>
+            <Typography variant={'h6'}>Bistro reply:</Typography>
+            {displayVerticalSpace(10)}
+            <Typography >{suggestion.reply}</Typography>
+        </div>
+
+    }
     async function addSuggestion(){
         if(!movie) return;
         const newSuggestion = {
             name: name,
             movie: movie,
             description: description,
+            reply: '',
         }
         setSuggestions(suggestions.concat([newSuggestion]))
         try {
@@ -111,12 +121,10 @@ export function Suggestions () {
                                     <Grid container>
                                         <Grid item xs={12}>
                                             <Typography>{s.description}</Typography>
+                                            {displayVerticalSpace(25)}
                                         </Grid>
-                                        <Grid item xs={3}>
-                                            <Typography>Bistro reply</Typography>
-                                        </Grid>
-                                        <Grid item xs={9}>
-                                            <Typography>{s.reply}</Typography>
+                                        <Grid item xs={12}>
+                                            {bistroReply(s)}
                                         </Grid>
                                     </Grid>
 

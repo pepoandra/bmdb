@@ -13,171 +13,248 @@ import Avatar from '@material-ui/core/Avatar';
 import CardHeader from '@material-ui/core/CardHeader';
 import CardContent from '@material-ui/core/CardContent';
 import CardMedia from '@material-ui/core/CardMedia';
+import Accordion from '@material-ui/core/Accordion';
+import AccordionSummary from '@material-ui/core/AccordionSummary';
+import AccordionDetails from '@material-ui/core/AccordionDetails';
 import Typography from '@material-ui/core/Typography';
-import Grid from '@material-ui/core/Grid';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';import Grid from '@material-ui/core/Grid';
 import {displayVerticalSpace} from "../helpers/helpers";
 import Chip from "@material-ui/core/Chip";
 const { MovieDb } = require('moviedb-promise')
 const moviedb = new MovieDb('e8bb48788d1a95090608148c98ab71d5')
-
+import cork from '../cork.png';
+import movieImg from '../movie.jpg';
+import {NAMES} from "../helpers/constants";
+import Divider from "@material-ui/core/Divider";
 const localizer = momentLocalizer(moment)
 const HOUR_OFFSET = 0;
-function CalendarComponent () {
-  const [movies, setMovies] = useState([])
-  const [persons, setPersons] = useState([])
+import Carousel from 'react-material-ui-carousel'
+import {Paper} from '@material-ui/core'
+import ReactCountryFlag from "react-country-flag"
 
-  const [selectedMovie, setSelectedMovie] = useState('')
+ function CalendarComponent () {
+    const [movies, setMovies] = useState([])
+    const [persons, setPersons] = useState([])
 
-  const [overview, setOverview] = useState('')
-  const [poster, setPoster] = useState('')
+    const [selectedMovie, setSelectedMovie] = useState('')
 
-  const [modalIsOpen, setIsOpen] = useState(false)
+    const [overview, setOverview] = useState('')
+    const [movieImages, setMovieImages] = useState([])
+    const [country, setCountry] = useState('')
+    const [modalIsOpen, setIsOpen] = useState(false)
 
-  function openModal () {
-    setIsOpen(true)
-  }
+    function openModal () {
+        setIsOpen(true)
+    }
 
 
-  function getMovieInfo (title) {
-    moviedb.searchMovie({ query: title.split('(')[0], language: 'en' })
-      .then(res => {
-        setOverview(res.results[0].overview)
-        setPoster(res.results[0].poster_path)
-      })
-      .catch(console.error)
-  }
+    function getMovieInfo (title) {
+        moviedb.searchMovie({ query: title.split('(')[0], language: 'en' })
+            .then(res => {
+                setOverview(res.results[0].overview)
+                setMovieImages([res.results[0].poster_path, res.results[0].backdrop_path])
+                setCountry(res.results[0].original_language)
+            })
+            .catch(console.error)
+    }
 
-  function closeModal () {
-    setIsOpen(false)
-  }
-  useEffect(() => {
-    fetchMovies()
-    fetchPersons()
-  }, [])
+    function closeModal () {
+        setIsOpen(false)
+    }
+    useEffect(() => {
+        fetchMovies()
+        fetchPersons()
+    }, [])
 
-  function setHours (d) {
-    d.setHours(d.getHours() + HOUR_OFFSET)
-    return d
-  }
-  async function handleEventClick (event) {
-    await setSelectedMovie(event.title)
-    getMovieInfo(event.title)
-    const person = persons.find(p => p.id === event.person)
-    openModal()
-  }
+    function setHours (d) {
+        d.setHours(d.getHours() + HOUR_OFFSET)
+        return d
+    }
+    async function handleEventClick (event) {
+        await setSelectedMovie(event.title)
+        getMovieInfo(event.title)
+        const person = persons.find(p => p.id === event.person)
+        openModal()
+    }
     async function fetchMovies () {
         const apiData = await API.graphql({ query: listMovies })
         const fetchedMovies = apiData.data.listMovies.items;
         await setMovies(fetchedMovies.filter(n => !n._deleted ))
     }
-  async function fetchPersons () {
-    const apiData = await API.graphql({ query: listPersons })
-    setPersons(apiData.data.listPersons.items)
-  }
+    async function fetchPersons () {
+        const apiData = await API.graphql({ query: listPersons })
+        setPersons(apiData.data.listPersons.items)
+    }
 
-  function showDescription (title) {
-    const event = movies.find(m => m.title === title)
-    if (!event) return
-    let backgroundColor = event.worst > event.best? '#FF0000' :'#006400'
-    backgroundColor = event.worst === event.best? '#C0C0C0': backgroundColor
-    const avatarStyles = {
-        height: '70px',
-        width: '70px',
-        backgroundColor }
-
-      return <Card>
-        <CardHeader
-            avatar={
-                <Avatar style={avatarStyles}>
-                    {event.pickedBy}
-                </Avatar>
+    function getBistroAverageRating(movie) {
+        let sum = 0, count = 0;
+        NAMES.map(n => {
+            if( movie[`rate${n}`]){
+                sum += movie[`rate${n}`]
+                count += 1
             }
-            title={selectedMovie}
-        />
-                <CardContent>
-                    <Grid container>
-                        <Grid item xs={12}>
-                            {`Corked by: ${event.corkedBy}   Picked by: ${event.pickedBy}`}
-                        </Grid>
-                        <Grid item xs={12}>
-                            {`Seb: ${event.rateSeb}   Amy: ${event.rateAmy}   Shane: ${event.rateShane}    Dov: ${event.rateDov}`}
-                        </Grid>
-                        <Grid item xs={6}>
-                            <div className={'tags'}>
-                                {event.tags.map(t => {
-                                    return <div className={'chips'}>
-                                        <Chip
-                                            label={t}
-                                            color="primary"
-                                        />
-                                    </div>
-                                })}
+        })
+        if(count === 0) return;
+        const avg = sum / count
+        let backgroundColor = avg  < 4 ? 'red' : 'gray'
+        backgroundColor = avg > 6? 'green' : backgroundColor
+        const avatarStyles = {
+            height: '45px',
+            width: '45px',
+            backgroundColor
+        }
+
+        return <Avatar style={avatarStyles}>
+            {avg}
+        </Avatar>
+
+    }
+    function showDescription (title) {
+        const event = movies.find(m => m.title === title)
+        if (!event) return
+/*
+                    <ReactCountryFlag
+                        className="emojiFlag"
+                        countryCode={country.toUpperCase()}
+                        style={{
+                            fontSize: '2em',
+                            lineHeight: '2em',
+                        }}
+                    />
+ */
+        return <Card>
+            <Grid container>
+                <Grid item xs={6}>
+                    <CardHeader
+                        avatar={getBistroAverageRating(event)}
+                        title={selectedMovie}
+                        titleTypographyProps={{
+                        variant: 'h4'
+                        }}
+                    />
+                    <div className={'tags'}>
+                        {event.tags.map(t => {
+                            return <div className={'chips'}>
+                                <Chip
+                                    label={t}
+                                    color="primary"
+                                />
                             </div>
+                        })}
+                    </div>
+                </Grid>
+                <Grid item xs={5}>
+                    {displayVerticalSpace(15)}
+                    <Grid container>
+                        <Grid item xs={2}>
+                            <img src={cork} alt="Logo" className={'minicork'}/>
                         </Grid>
-                        <Grid item xs={12}>
-                            <Typography variant="body2" color="textPrimary" component="p">
-                                {overview}
-                            </Typography>
+                        <Grid item xs={4}>
+                            {displayVerticalSpace(10)}
+                            <Typography> {event.corkedBy} </Typography>
                         </Grid>
-                        {displayVerticalSpace(15)}
-                        <Grid item xs={12} style={{textAlign: "center"}}>
-
+                        <Grid item xs={2}>
+                            <img src={movieImg} alt="Logo" className={'minicork'}/>
                         </Grid>
-                        {displayVerticalSpace(8)}
-                        <Grid item xs={12} style={{textAlign: "center"}}>
-                            <CardMedia
-                                className={'media'}
-                                component="img"
-                                image={`https://image.tmdb.org/t/p/original/${poster}`}
-                            />
+                        <Grid item xs={4}>
+                            {displayVerticalSpace(10)}
+                            <Typography align={'center'}>{event.pickedBy} </Typography>
                         </Grid>
+                        {NAMES.map(n => {
+                            if(!event[`rate${n}`]) return;
+                            const rate = event[`rate${n}`]
+                            return <Grid item xs={5}>
+                                <Typography align={'right'}>{`${n}: ${rate}`}</Typography>
+                            </Grid>
+                        })}
                     </Grid>
-                </CardContent>
-            </Card>
-  }
-  const dialogPaper = {
-      minHeight: '50vh',
-      maxHeight: '90vh',
-  }
+                </Grid>
+            </Grid>
+            <CardContent>
+                <Divider/>
+                {displayVerticalSpace(10)}
+                <Grid container>
+                    <Grid item xs={12}>
+                        <Typography>{event.thoughts}</Typography>
+                        {displayVerticalSpace(15)}
+                    </Grid>
+                    {displayVerticalSpace(15)}
+                    <Grid item xs={12}>
+                        <Accordion>
+                            <AccordionSummary
+                                expandIcon={<ExpandMoreIcon />}
+                            >
+                                <Typography>What the internet says</Typography>
+                            </AccordionSummary>
+                            <AccordionDetails>
+                                <Typography>
+                                    {overview}
+                                </Typography>
+                            </AccordionDetails>
+                        </Accordion>
+                        {displayVerticalSpace(15)}
+                    </Grid>
+                    <Grid item xs={12}>
+                        <Carousel>
+                            {movieImages.map((img, ind) => {
+                                const className = ind === 0? 'portrait' : 'landscape'
+                                return <Paper className={'paperImage'}>
+                                    <CardMedia
+                                        className={className}
+                                        component="img"
+                                        image={`https://image.tmdb.org/t/p/original/${img}`}
+                                    />
+                                </Paper>
+                            })}
+                        </Carousel>
+                    </Grid>
+                </Grid>
+            </CardContent>
+        </Card>
+    }
+    const dialogPaper = {
+        minHeight: '50vh',
+        maxHeight: '90vh',
+    }
 
-  return (
-    <div className="App">
-        <div>
-            <Calendar
-              localizer={localizer}
-              events={movies.map((m, id) => {
+    return (
+        <div className="App">
+            <div>
+                <Calendar
+                    localizer={localizer}
+                    events={movies.map((m, id) => {
                 return {
                     id,
                     start: setHours(new Date(m.date)),
                     end: setHours(new Date(m.date)),
                     ...m,
                 }
-              })}
-              startAccessor="start"
-              endAccessor="end"
-              onSelectEvent={event => handleEventClick(event)}
-              style={{ height: 800 }}
-              popup
-            />
-        </div>
-        <Dialog
-            fullWidth={false}
-            maxWidth={'sm'}
-            scroll={'paper'}
-            classes={{dialogPaper}}
-            open={modalIsOpen}
-            onClose={closeModal}
-            aria-labelledby="max-width-dialog-title"
-        >
+                    })}
+                    startAccessor="start"
+                    endAccessor="end"
+                    onSelectEvent={event => handleEventClick(event)}
+                    style={{ height: 800 }}
+                    popup
+                />
+            </div>
+            <Dialog
+                fullWidth={false}
+                maxWidth={'sm'}
+                scroll={'paper'}
+                classes={{dialogPaper}}
+                open={modalIsOpen}
+                onClose={closeModal}
+                aria-labelledby="max-width-dialog-title"
+            >
                 {showDescription(selectedMovie)}
-            <DialogActions>
-                <Button onClick={closeModal} color="primary">
-                    Close
-                </Button>
-            </DialogActions>
-        </Dialog>
-    </div>
-  )
+                <DialogActions>
+                    <Button onClick={closeModal} color="primary">
+                        Close
+                    </Button>
+                </DialogActions>
+            </Dialog>
+        </div>
+    )
 }
 
 export { CalendarComponent }

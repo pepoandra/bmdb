@@ -33,6 +33,7 @@ export declare class Suggestion {
   readonly name?: string;
   readonly movie?: string;
   readonly description?: string;
+  readonly reply?: string;
   constructor(init: ModelInit<Suggestion>);
   static copyOf(source: Suggestion, mutator: (draft: MutableModel<Suggestion>) => MutableModel<Suggestion> | void): Suggestion;
 }
