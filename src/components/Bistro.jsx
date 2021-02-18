@@ -28,6 +28,7 @@ import {updateMovie, deleteMovie} from "../graphql/mutations";
 import { withAuthenticator, AmplifySignOut } from '@aws-amplify/ui-react';
 import { Auth } from 'aws-amplify';
 import {NotFound} from "./NotFound";
+import {SuggestionManager} from "./SuggestionManager";
 
 
 const initialState = {
@@ -403,6 +404,11 @@ function Bistro () {
                     <Grid item xs={8}>
                         {displayMovie(state.selectedMovie)}
                     </Grid>
+                    <Grid item xs={12}>
+                        <SuggestionManager>
+
+                        </SuggestionManager>
+                    </Grid>
                 </Grid>
             </Box>
             <div>
@@ -418,9 +424,7 @@ function Bistro () {
                     </div>
                 </Modal>
             </div>
-            <AmplifySignOut>
-
-            </AmplifySignOut>
+            <AmplifySignOut/>
         </Container>
     )
 }

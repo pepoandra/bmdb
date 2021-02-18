@@ -20,7 +20,7 @@ export function Suggestions () {
     }, [])
     async function fetchSuggestions () {
         const apiData = await API.graphql({ query: listSuggestions })
-        await setSuggestions(apiData.data.listSuggestions.items)
+        await setSuggestions(apiData.data.listSuggestions.items.filter(s => !s._deleted))
     }
 
     function handleFieldChange(event) {
@@ -108,7 +108,18 @@ export function Suggestions () {
                                     subheader={s.name}
                                 />
                                 <CardContent>
-                                    <Typography>{s.description}</Typography>
+                                    <Grid container>
+                                        <Grid item xs={12}>
+                                            <Typography>{s.description}</Typography>
+                                        </Grid>
+                                        <Grid item xs={3}>
+                                            <Typography>Bistro reply</Typography>
+                                        </Grid>
+                                        <Grid item xs={9}>
+                                            <Typography>{s.reply}</Typography>
+                                        </Grid>
+                                    </Grid>
+
                                 </CardContent>
                             </Card>
                             </div>
