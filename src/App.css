@@ -37,6 +37,11 @@
   position: relative;
 }
 
+.paperDialog {
+  overflow: visible;
+  width: 1000px;
+}
+
 
 .App-header {
   background-color: #282c34;

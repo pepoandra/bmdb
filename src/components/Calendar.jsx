@@ -47,13 +47,18 @@ import ReactCountryFlag from "react-country-flag"
         setIsOpen(true)
     }
 
+    useEffect(() => {
+
+    }, [])
 
     function getMovieInfo (title) {
         moviedb.searchMovie({ query: title.split('(')[0], language: 'en' })
             .then(res => {
                 setOverview(res.results[0].overview)
                 setMovieImages([res.results[0].poster_path, res.results[0].backdrop_path])
-                setCountry(res.results[0].original_language)
+                moviedb.movieInfo(res.results[0].id).then(res => {
+                    setCountry(JSON.stringify(res.production_countries[0].iso_3166_1))
+                })
             })
             .catch(console.error)
     }
@@ -96,35 +101,29 @@ import ReactCountryFlag from "react-country-flag"
         })
         if(count === 0) return;
         const avg = sum / count
-        let backgroundColor = avg  < 4 ? 'red' : 'gray'
-        backgroundColor = avg > 6? 'green' : backgroundColor
         const avatarStyles = {
             height: '45px',
             width: '45px',
-            backgroundColor
+            backgroundColor: 'white'
         }
 
         return <Avatar style={avatarStyles}>
-            {avg}
+            <ReactCountryFlag
+                countryCode={country}
+                style={{
+                    fontSize: '2em',
+                    lineHeight: '2em',
+                }}
+            />
         </Avatar>
 
     }
     function showDescription (title) {
         const event = movies.find(m => m.title === title)
         if (!event) return
-/*
-                    <ReactCountryFlag
-                        className="emojiFlag"
-                        countryCode={country.toUpperCase()}
-                        style={{
-                            fontSize: '2em',
-                            lineHeight: '2em',
-                        }}
-                    />
- */
         return <Card>
             <Grid container>
-                <Grid item xs={6}>
+                <Grid item xs={7}>
                     <CardHeader
                         avatar={getBistroAverageRating(event)}
                         title={selectedMovie}
@@ -158,14 +157,14 @@ import ReactCountryFlag from "react-country-flag"
                         </Grid>
                         <Grid item xs={4}>
                             {displayVerticalSpace(10)}
-                            <Typography align={'center'}>{event.pickedBy} </Typography>
+                            <Typography align={'left'}>{event.pickedBy} </Typography>
                         </Grid>
                         {NAMES.map(n => {
                             if(!event[`rate${n}`]) return;
                             const rate = event[`rate${n}`]
-                            return <Grid item xs={5}>
-                                <Typography align={'right'}>{`${n}: ${rate}`}</Typography>
-                            </Grid>
+                            return <Grid item xs={3}>
+                                    <Typography align={'right'}>{`${n}: ${rate}`}</Typography>
+                                </Grid>
                         })}
                     </Grid>
                 </Grid>
@@ -215,6 +214,7 @@ import ReactCountryFlag from "react-country-flag"
     const dialogPaper = {
         minHeight: '50vh',
         maxHeight: '90vh',
+        overflow: 'scroll',
     }
 
     return (
@@ -238,10 +238,11 @@ import ReactCountryFlag from "react-country-flag"
                 />
             </div>
             <Dialog
-                fullWidth={false}
-                maxWidth={'sm'}
-                scroll={'paper'}
+                fullWidth={true}
+                maxWidth={'md'}
+                scroll={'body'}
                 classes={{dialogPaper}}
+                paperProps={{className: 'paperDialog'}}
                 open={modalIsOpen}
                 onClose={closeModal}
                 aria-labelledby="max-width-dialog-title"
