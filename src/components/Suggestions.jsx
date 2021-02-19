@@ -54,7 +54,7 @@ export function Suggestions () {
             description: description,
             reply: '',
         }
-        setSuggestions(suggestions.concat([newSuggestion]))
+        setSuggestions([newSuggestion].concat(suggestions))
         try {
             await API.graphql(graphqlOperation(createSuggestion, {input: newSuggestion}))
         } catch (err) {
