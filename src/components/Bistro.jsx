@@ -33,6 +33,7 @@ import {SuggestionManager} from "./SuggestionManager";
 
 const initialState = {
     movies: [],
+    searchedForMovie: '',
     selectedMovie: '',
     rating: 0,
     tags: '',
@@ -81,11 +82,15 @@ function Bistro () {
         const apiData = await API.graphql({ query: listMovies })
         const fetchedMovies = apiData.data.listMovies.items;
         if(fetchedMovies && fetchedMovies.length > 0){
-            await setState({...state, movies: fetchedMovies.filter(n => !n._deleted ) })
+            const cleanMovies = fetchedMovies.filter(n => !n._deleted );
+            await setState({...state, movies: cleanMovies })
             onClickMovie(fetchedMovies[0].title)
         }
     }
 
+    function filterDisplayedMovies(movie) {
+        return movie.title.toLowerCase().includes(state.searchedForMovie.toLowerCase())
+    }
     function onClickMovie(title) {
         const m = state.movies.find(movie => movie.title === title)
         if(!m) return;
@@ -119,12 +124,10 @@ function Bistro () {
         }
         try {
             const algo = await API.graphql(graphqlOperation(deleteMovie, {input: input }))
-            alert('success')
             setState({...state, savedSuccess: true})
             await fetchMovies();
         } catch (err) {
             alert(JSON.stringify(err.errors[0]))
-            alert((err.errors[0].errorType[0]))
             setState({...state, savedError: true, errorMsg: err.message})
         }
         setTimeout(() => {
@@ -207,7 +210,6 @@ function Bistro () {
     }
     function onChangeDate(event) {
         setState({...state, date: event.target.value})
-        // alert(JSON.stringify(event.target.value));
     }
     function displayAlert() {
         if(!(state.savedError || state.savedSuccess)) return
@@ -392,13 +394,22 @@ function Bistro () {
                         {displayVerticalSpace(15)}
                         <Divider/>
                         {displayVerticalSpace(15)}
-                        <FormLabel component={'label'}>Select Movie</FormLabel>
+                        <TextField
+                            fullWidth
+                            id="searchedForMovie"
+                            autoComplete={'off'}
+                            label={'Select movie'}
+                            onChange={(event) => {
+                                setState({...state, searchedForMovie: event.target.value})
+                            }}
+                            value={ state.searchedForMovie }
+                        />
                         <List
                             component="nav"
                             aria-label="main mailbox folders"
                             style={{maxHeight: '50vw', overflow: 'auto'}}
                         >
-                            {state.movies.map(generateMovieItem)}
+                            {state.movies.filter(filterDisplayedMovies).map(generateMovieItem)}
                         </List>
                     </Grid>
                     <Grid item xs={8}>
@@ -410,6 +421,7 @@ function Bistro () {
                         </SuggestionManager>
                     </Grid>
                 </Grid>
+                {JSON.stringify(state)}
             </Box>
             <div>
                 <Modal
