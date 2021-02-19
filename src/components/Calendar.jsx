@@ -180,7 +180,7 @@ import Slider from '@material-ui/core/Slider';
                                 disabled
                                 min={0}
                                 max={10}
-                                style={{width: '80%', color: getNumberColor(getBistroAverage(event))}}
+                                style={{width: '90%', color: getNumberColor(getBistroAverage(event))}}
                             />
                         </Grid>
                         {NAMES.map(n => {
