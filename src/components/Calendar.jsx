@@ -31,6 +31,7 @@ const localizer = momentLocalizer(moment)
 const HOUR_OFFSET = 0;
 import Carousel from 'react-material-ui-carousel'
 import {Paper} from '@material-ui/core'
+import Slider from '@material-ui/core/Slider';
 
  function CalendarComponent () {
     const [movies, setMovies] = useState([])
@@ -101,16 +102,7 @@ import {Paper} from '@material-ui/core'
         setPersons(apiData.data.listPersons.items)
     }
 
-    function getBistroAverageRating(movie) {
-        let sum = 0, count = 0;
-        NAMES.map(n => {
-            if( movie[`rate${n}`]){
-                sum += movie[`rate${n}`]
-                count += 1
-            }
-        })
-        if(count === 0) return;
-        const avg = sum / count
+    function getFlagAvatar(movie) {
         const avatarStyles = {
             height: '50px',
             width: '60px',
@@ -120,16 +112,30 @@ import {Paper} from '@material-ui/core'
         return <Avatar style={avatarStyles}>
             <span style={{fontSize: '50px' }} className={`flag-icon flag-icon-${country.toLowerCase().slice(1, -1)}`}></span>
         </Avatar>
-
+    }
+    function getBistroAverage(movie){
+        let sum = 0, count = 0;
+        NAMES.map(n => {
+            if( movie[`rate${n}`]){
+                sum += movie[`rate${n}`]
+                count += 1
+            }
+        })
+        if(count === 0) return;
+        return (sum / count).toFixed(2)
+    }
+    function getNumberColor(avg) {
+        const color = avg < 4 ? 'red' : 'gray';
+        return avg > 6? 'green' : color
     }
     function showDescription (title) {
         const event = movies.find(m => m.title === title)
         if (!event) return
         return <Card>
             <Grid container>
-                <Grid item xs={7}>
+                <Grid item xs={6}>
                     <CardHeader
-                        avatar={getBistroAverageRating(event)}
+                        avatar={getFlagAvatar(event)}
                         title={selectedMovie}
                         titleTypographyProps={{
                         variant: 'h4'
@@ -145,29 +151,53 @@ import {Paper} from '@material-ui/core'
                             </div>
                         })}
                     </div>
-                </Grid>
-                <Grid item xs={5}>
-                    {displayVerticalSpace(15)}
                     <Grid container>
-                        <Grid item xs={2}>
+                        <Grid item xs={1}>
                             <img src={cork} alt="Logo" className={'minicork'}/>
                         </Grid>
                         <Grid item xs={4}>
                             {displayVerticalSpace(10)}
                             <Typography> {event.corkedBy} </Typography>
                         </Grid>
-                        <Grid item xs={2}>
+                        <Grid item xs={1}>
                             <img src={movieImg} alt="Logo" className={'minicork'}/>
                         </Grid>
                         <Grid item xs={4}>
                             {displayVerticalSpace(10)}
                             <Typography align={'left'}>{event.pickedBy} </Typography>
                         </Grid>
+                    </Grid>
+                </Grid>
+                <Grid item xs={6}>
+                    {displayVerticalSpace(15)}
+                    <Grid container>
+                        <Grid item xs={12}>
+                            <Typography>Bistro</Typography>
+                            <Slider
+                                defaultValue={getBistroAverage(event)}
+                                aria-labelledby="discrete-slider-always"
+                                valueLabelDisplay="on"
+                                disabled
+                                min={0}
+                                max={10}
+                                style={{width: '80%', color: getNumberColor(getBistroAverage(event))}}
+                            />
+                        </Grid>
                         {NAMES.map(n => {
                             if(!event[`rate${n}`]) return;
                             const rate = event[`rate${n}`]
-                            return <Grid item xs={3}>
-                                <Typography align={'right'}>{`${n}: ${rate}`}</Typography>
+                            return <Grid item xs={6}>
+                                <Typography>{n}</Typography>
+                                <Slider
+                                    defaultValue={rate}
+                                    aria-label={n}
+                                    aria-labelledby="discrete-slider-always"
+                                    valueLabelDisplay="on"
+                                    disabled
+                                    min={0}
+                                    max={10}
+                                    style={{width: '80%', color: getNumberColor(rate) }}
+                                />
                             </Grid>
                         })}
                     </Grid>
