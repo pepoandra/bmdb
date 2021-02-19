@@ -1,5 +1,6 @@
  import React, { useState, useEffect } from 'react'
 import '../App.css'
+import '../../node_modules/flag-icon-css/css/flag-icon.css'
 import {API, graphqlOperation} from 'aws-amplify'
 import { listMovies, listPersons } from '../graphql/queries'
 import { Calendar, momentLocalizer } from 'react-big-calendar'
@@ -30,7 +31,6 @@ const localizer = momentLocalizer(moment)
 const HOUR_OFFSET = 0;
 import Carousel from 'react-material-ui-carousel'
 import {Paper} from '@material-ui/core'
-import ReactCountryFlag from "react-country-flag"
 
  function CalendarComponent () {
     const [movies, setMovies] = useState([])
@@ -46,18 +46,28 @@ import ReactCountryFlag from "react-country-flag"
     function openModal () {
         setIsOpen(true)
     }
-
-    useEffect(() => {
-
-    }, [])
+    // Turns out that just searching for the movie title we save
+    // will not always return the right movie in the first position,
+    // so this function deals with the special cases
+    function handleExceptions(movieTitle) {
+        switch (movieTitle){
+            case 'Welcome to the South':
+                return 1;
+            case '1991':
+                return 10;
+            default:
+                return 0;
+        }
+    }
 
     function getMovieInfo (title) {
-        moviedb.searchMovie({ query: title.split('(')[0], language: 'en' })
+        moviedb.searchMovie({ query: title, language: 'en' })
             .then(res => {
-                setOverview(res.results[0].overview)
-                setMovieImages([res.results[0].poster_path, res.results[0].backdrop_path])
-                moviedb.movieInfo(res.results[0].id).then(res => {
-                    setCountry(JSON.stringify(res.production_countries[0].iso_3166_1))
+                const idx = handleExceptions(title)
+                setOverview(res.results[idx].overview)
+                setMovieImages([res.results[idx].poster_path, res.results[idx].backdrop_path])
+                moviedb.movieInfo(res.results[idx].id).then(res => {
+                    if(res.production_countries && res.production_countries.length > 0) setCountry(JSON.stringify(res.production_countries[0].iso_3166_1))
                 })
             })
             .catch(console.error)
@@ -102,19 +112,13 @@ import ReactCountryFlag from "react-country-flag"
         if(count === 0) return;
         const avg = sum / count
         const avatarStyles = {
-            height: '45px',
-            width: '45px',
+            height: '50px',
+            width: '60px',
             backgroundColor: 'white'
         }
-
+        if(country.length === 0) return;
         return <Avatar style={avatarStyles}>
-            <ReactCountryFlag
-                countryCode={country}
-                style={{
-                    fontSize: '2em',
-                    lineHeight: '2em',
-                }}
-            />
+            <span style={{fontSize: '50px' }} className={`flag-icon flag-icon-${country.toLowerCase().slice(1, -1)}`}></span>
         </Avatar>
 
     }
@@ -163,8 +167,8 @@ import ReactCountryFlag from "react-country-flag"
                             if(!event[`rate${n}`]) return;
                             const rate = event[`rate${n}`]
                             return <Grid item xs={3}>
-                                    <Typography align={'right'}>{`${n}: ${rate}`}</Typography>
-                                </Grid>
+                                <Typography align={'right'}>{`${n}: ${rate}`}</Typography>
+                            </Grid>
                         })}
                     </Grid>
                 </Grid>

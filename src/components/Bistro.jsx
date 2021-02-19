@@ -94,7 +94,7 @@ function Bistro () {
             watchers: m.watchedBy,
             pickedBy: m.pickedBy,
             corkedBy: m.corkedBy,
-            rating: m[`rate${personLoggedIn}`],
+            rating: m[`rate${personLoggedIn}`] || 0,
             tags: m.tags,
             newTag: '',
             selectedMovie: m.title,
