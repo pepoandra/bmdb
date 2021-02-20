@@ -12,20 +12,41 @@ import DialogActions from '@material-ui/core/DialogActions';
 const localizer = momentLocalizer(moment)
 const HOUR_OFFSET = 0;
 import {ViewMovie} from "./ViewMovie";
+import Modal from "@material-ui/core/Modal";
+import {makeStyles} from "@material-ui/core/styles";
 
-
+const useStyles = makeStyles((theme) => ({
+    modal: {
+        display: 'flex',
+        justifyContent: 'center',
+        left: '50%',
+        top: '50%',
+        outline: 'none',
+        border: 'none',
+        overflow: 'auto'
+    },
+    paper: {
+        top: '20%',
+        border: 'none',
+        outline: 'none',
+        display: 'relative',
+        width: '1000px',
+        boxShadow: theme.shadows[5],
+    },
+}));
 function CalendarComponent () {
     const [movies, setMovies] = useState([])
 
     const [selectedMovie, setSelectedMovie] = useState('')
     const [modalIsOpen, setIsOpen] = useState(false)
+    const classes = useStyles();
 
-    function selectNextMovie() {
+    function selectPrevMovie() {
         const idx = movies.findIndex(m => m.title === selectedMovie);
         if (idx === movies.length - 1) return
         handleEventClick(movies[idx + 1])
     }
-    function selectPrevMovie() {
+    function selectNextMovie() {
         const idx = movies.findIndex(m => m.title === selectedMovie);
         if (idx === 0) return
         handleEventClick(movies[idx - 1])
@@ -63,10 +84,11 @@ function CalendarComponent () {
     }
     function arrowPressAction(event){
         if([38, 39].includes(event.keyCode)){
-            selectPrevMovie()
+            selectNextMovie()
         }
         if([37, 40].includes(event.keyCode)){
-            selectNextMovie()
+
+            selectPrevMovie()
         }
         if(event.keyCode === 27){
             closeModal()
@@ -98,7 +120,7 @@ function CalendarComponent () {
                 scroll={'body'}
                 classes={{dialogPaper}}
                 paperProps={{className: 'paperDialog'}}
-                open={modalIsOpen}
+                open={false}
                 onClose={closeModal}
                 aria-labelledby="max-width-dialog-title"
                 onKeyDown={arrowPressAction}
@@ -110,6 +132,23 @@ function CalendarComponent () {
                     </Button>
                 </DialogActions>
             </Dialog>
+            <Modal
+                open={modalIsOpen}
+                aria-labelledby="simple-modal-title"
+                aria-describedby="simple-modal-description"
+                className={`${classes.modal}`}
+                onEscapeKeyDown={closeModal}
+                onKeyDown={arrowPressAction}
+            >
+                <div className={classes.paper}>
+                    <ViewMovie
+                        movie={movies.find(m => m.title === selectedMovie)}
+                        nextFunction={selectNextMovie}
+                        prevFunction={selectPrevMovie}
+                        closeFunction={closeModal}
+                    />
+                </div>
+            </Modal>
         </div>
     )
 }

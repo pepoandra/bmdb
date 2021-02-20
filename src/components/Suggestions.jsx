@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react'
 import Box from '@material-ui/core/Box';
 import {Button, Card, Container, TextField, Typography} from "@material-ui/core";
-import logo from '../box.png';
+import logo from '../imgs/box.png';
 import CardHeader from "@material-ui/core/CardHeader";
 import Grid from "@material-ui/core/Grid";
 import CardContent from "@material-ui/core/CardContent";

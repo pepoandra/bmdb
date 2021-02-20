@@ -1,8 +1,8 @@
 import React from 'react'
 import Box from '@material-ui/core/Box';
 import {Card, Container, Table, TableContainer, TableHead, TableRow} from "@material-ui/core";
-import logo from '../cork.png';
-import movieImg from '../movie.jpg';
+import logo from '../imgs/cork.png';
+import movieImg from '../imgs/movie.jpg';
 import CardHeader from "@material-ui/core/CardHeader";
 import Grid from "@material-ui/core/Grid";
 import CardContent from "@material-ui/core/CardContent"; // Tell webpack this JS file uses this image

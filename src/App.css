@@ -30,9 +30,6 @@
   background-color: rgba(0, 0, 0, 0.4);
 }
 .Modal {
-  height: 55%;
-  width: 60%;
-  background-color: #ffffff;
   overflow: auto;
   position: relative;
 }
@@ -85,29 +82,32 @@
   height: 550px;
 }
 .portrait {
-  margin-left: auto;
-  margin-right: auto;
-  max-width: 55%;
-  max-height: 90%;
-  height: auto;
+  margin: auto;
+  max-width: 35%;
+  max-height: 60vh;
 }
 .landscape {
-  width: 500px;
-  height: auto;
-  margin: 0;
-  position: absolute;
-  top: 50%;
-  -ms-transform: translateY(-50%);
-  transform: translateY(-50%);
+  margin: auto;
+  max-width: 90%;
+  max-height: 60vh;
 }
 .media {
   object-fit: contain;
 }
 
+.tmdb {
+  height: 2vmin;
+  pointer-events: none;
+  -ms-transform: translate(-50%, -50%);
+}
+.bmdb {
+  height: 2vmin;
+  pointer-events: none;
+  -ms-transform: translate(-50%, -50%);
+}
 .minicork {
   height: 5vmin;
   pointer-events: none;
-  -ms-transform: translate(-50%, -50%);
 }
 .cork {
   height: 10vmin;

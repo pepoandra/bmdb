@@ -1,8 +1,8 @@
 import React from 'react'
 import Box from '@material-ui/core/Box';
 import {Card, Container, Typography} from "@material-ui/core";
-import cork from '../cork.png';
-import movieImg from '../movie.jpg';
+import cork from '../imgs/cork.png';
+import movieImg from '../imgs/movie.jpg';
 
 import CardHeader from "@material-ui/core/CardHeader";
 import Grid from "@material-ui/core/Grid";

@@ -2,10 +2,13 @@ import Card from "@material-ui/core/Card";
 import Grid from "@material-ui/core/Grid";
 import CardHeader from "@material-ui/core/CardHeader";
 import Chip from "@material-ui/core/Chip";
-import cork from "../cork.png";
+import cork from "../imgs/cork.png";
+import bmdb from "../imgs/bmdb.png";
+import tmdb from "../imgs/tmdb.png";
+
 import {displayVerticalSpace} from "../helpers/helpers";
 import Typography from "@material-ui/core/Typography";
-import movieImg from "../movie.jpg";
+import movieImg from "../imgs/movie.jpg";
 import Slider from "@material-ui/core/Slider";
 import {NAMES} from "../helpers/constants";
 import CardContent from "@material-ui/core/CardContent";
@@ -22,6 +25,10 @@ import {useEffect, useState} from "react";
 const { MovieDb } = require('moviedb-promise')
 const moviedb = new MovieDb('e8bb48788d1a95090608148c98ab71d5')
 import '../App.css'
+import Button from "@material-ui/core/Button";
+import KeyboardArrowLeftIcon from '@material-ui/icons/KeyboardArrowLeft';
+import KeyboardArrowRightIcon from '@material-ui/icons/KeyboardArrowRight';
+import CloseIcon from '@material-ui/icons/Close';
 
 const initialState = {
     overview: '',
@@ -29,9 +36,10 @@ const initialState = {
 }
 
 export function ViewMovie (props) {
-    const { movie } = props;
+    const { movie, nextFunction, prevFunction, closeFunction  } = props;
     const [state, setState] = useState(initialState);
     const [country, setCountry] = useState('')
+    const [tmdbRating, setTmdbRating] = useState('')
 
     // Turns out that just searching for the movie title we save
     // will not always return the right movie in the first position,
@@ -60,10 +68,12 @@ export function ViewMovie (props) {
                     movieImages: [res.results[idx].poster_path, res.results[idx].backdrop_path],
                 })
                 moviedb.movieInfo(res.results[idx].id).then(resp => {
+                    setTmdbRating(resp.vote_average.toString())
                     if(resp.production_countries && resp.production_countries.length > 0) {
                         setCountry(
                             JSON.stringify(resp.production_countries[0].iso_3166_1).toLowerCase().slice(1, -1)
                         )
+
                     }
                 })
             })
@@ -98,7 +108,10 @@ export function ViewMovie (props) {
     }
 
     const bistroAverage = getBistroAverage(movie)
-
+    const ratingAvatarStyles = {
+        height: '45px',
+        width: '45px',
+    }
     return <Card>
         <Grid container>
             <Grid item xs={6}>
@@ -127,32 +140,22 @@ export function ViewMovie (props) {
                         {displayVerticalSpace(10)}
                         <Typography> {movie.corkedBy} </Typography>
                     </Grid>
-                    <Grid item xs={1}>
+                    <Grid item xs={1} style={{marginRight: '10px'}}>
                         <img src={movieImg} alt="Logo" className={'minicork'}/>
                     </Grid>
-                    <Grid item xs={4}>
+                    <Grid item xs={3}>
                         {displayVerticalSpace(10)}
-                        <Typography align={'left'}>{movie.pickedBy} </Typography>
+                        <div style={{alignText: 'left'}}>
+                            <Typography >{movie.pickedBy} </Typography>
+                        </div>
                     </Grid>
                 </Grid>
             </Grid>
             <Grid item xs={6}>
                 {displayVerticalSpace(15)}
                 <Grid container>
-                    <Grid item xs={12}>
-                        <Typography>Bistro</Typography>
-                        <Slider
-                            value={bistroAverage}
-                            aria-labelledby="discrete-slider-always"
-                            valueLabelDisplay="on"
-                            disabled
-                            min={0}
-                            max={10}
-                            style={{width: '90%', color: getNumberColor(bistroAverage)}}
-                        />
-                    </Grid>
                     {NAMES.map(n => {
-                        if(!movie[`rate${n}`]) return;
+                        if(!movie[`rate${n}`]) return  <Grid item xs={6}/>
                         const rate = movie[`rate${n}`]
                         return <Grid item xs={6}>
                             <Typography>{n}</Typography>
@@ -168,6 +171,22 @@ export function ViewMovie (props) {
                             />
                         </Grid>
                     })}
+                    <Grid item xs={2}>
+                        {displayVerticalSpace(10)}
+                        <img src={bmdb} alt="Logo" className={'bmdb'}/>
+                    </Grid>
+                    <Grid item xs={4}>
+                        <div style={{alignText: 'left'}}>
+                            <Avatar style={{...ratingAvatarStyles,  backgroundColor: getNumberColor(bistroAverage) }}>{bistroAverage}</Avatar>
+                        </div>
+                    </Grid>
+                    <Grid item xs={3}>
+                        {displayVerticalSpace(10)}
+                        <img src={tmdb} alt="Logo" className={'tmdb'}/>
+                    </Grid>
+                    <Grid item xs={3}>
+                        <Avatar style={{...ratingAvatarStyles,  backgroundColor: getNumberColor(tmdbRating) }}>{tmdbRating}</Avatar>
+                    </Grid>
                 </Grid>
             </Grid>
         </Grid>
@@ -198,6 +217,7 @@ export function ViewMovie (props) {
                 <Grid item xs={12}>
                     <Carousel>
                         {state.movieImages.map((img, ind) => {
+                            if( !img || img === '') return
                             const className = ind === 0? 'portrait' : 'landscape'
                             return <Paper className={'paperImage'}>
                                 <CardMedia
@@ -208,6 +228,27 @@ export function ViewMovie (props) {
                             </Paper>
                         })}
                     </Carousel>
+                </Grid>
+                <Grid item xs={4}>
+                    <div style={{textAlign: 'left'}}>
+                        <Button onClick={prevFunction} >
+                            <KeyboardArrowLeftIcon/> Prev
+                        </Button>
+                    </div>
+                </Grid>
+                <Grid item xs={4}>
+                    <div style={{textAlign: 'center'}}>
+                        {closeFunction? <Button onClick={closeFunction} >
+                            <CloseIcon/> Close
+                        </Button> : null }
+                    </div>
+                </Grid>
+                <Grid item xs={4}>
+                    <div style={{textAlign: 'right'}}>
+                        <Button onClick={nextFunction}>
+                            Next <KeyboardArrowRightIcon/>
+                        </Button>
+                    </div>
                 </Grid>
             </Grid>
         </CardContent>
