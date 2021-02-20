@@ -141,10 +141,8 @@
   height: 700px;
 }
 
-
 .createMovieCard {
   display: block;
   transitionDuration: 0.3s;
   width: 600px;
 }
-
