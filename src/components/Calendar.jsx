@@ -181,7 +181,7 @@ import Slider from '@material-ui/core/Slider';
                         <Grid item xs={12}>
                             <Typography>Bistro</Typography>
                             <Slider
-                                defaultValue={getBistroAverage(event)}
+                                value={getBistroAverage(event)}
                                 aria-labelledby="discrete-slider-always"
                                 valueLabelDisplay="on"
                                 disabled
