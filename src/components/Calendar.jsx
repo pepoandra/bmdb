@@ -33,6 +33,7 @@ import Carousel from 'react-material-ui-carousel'
 import {Paper} from '@material-ui/core'
 import Slider from '@material-ui/core/Slider';
 
+
  function CalendarComponent () {
     const [movies, setMovies] = useState([])
     const [persons, setPersons] = useState([])
@@ -44,6 +45,22 @@ import Slider from '@material-ui/core/Slider';
     const [country, setCountry] = useState('')
     const [modalIsOpen, setIsOpen] = useState(false)
 
+    function selectNextMovie() {
+        const idx = movies.findIndex(m => m.title === selectedMovie);
+        if (idx === movies.length - 1) return
+        handleEventClick(movies[idx + 1])
+    }
+    function selectPrevMovie() {
+        const idx = movies.findIndex(m => m.title === selectedMovie);
+        if (idx === 0) return
+        handleEventClick(movies[idx - 1])
+    }
+     async function handleEventClick (event) {
+         await setSelectedMovie(event.title)
+         getMovieInfo(event.title)
+         const person = persons.find(p => p.id === event.person)
+         openModal()
+     }
     function openModal () {
         setIsOpen(true)
     }
@@ -86,16 +103,11 @@ import Slider from '@material-ui/core/Slider';
         d.setHours(d.getHours() + HOUR_OFFSET)
         return d
     }
-    async function handleEventClick (event) {
-        await setSelectedMovie(event.title)
-        getMovieInfo(event.title)
-        const person = persons.find(p => p.id === event.person)
-        openModal()
-    }
+
     async function fetchMovies () {
         const apiData = await API.graphql({ query: listMovies })
         const fetchedMovies = apiData.data.listMovies.items;
-        await setMovies(fetchedMovies.filter(n => !n._deleted ))
+        await setMovies(fetchedMovies.filter(n => !n._deleted ).sort((a, b) => b.date - a.date))
     }
     async function fetchPersons () {
         const apiData = await API.graphql({ query: listPersons })
@@ -250,7 +262,14 @@ import Slider from '@material-ui/core/Slider';
         maxHeight: '90vh',
         overflow: 'scroll',
     }
-
+     function arrowPressAction(event){
+         if([38, 39].includes(event.keyCode)){
+             selectNextMovie()
+         }
+         if([37, 40].includes(event.keyCode)){
+             selectPrevMovie()
+         }
+     }
     return (
         <div className="App">
             <div>
@@ -280,6 +299,7 @@ import Slider from '@material-ui/core/Slider';
                 open={modalIsOpen}
                 onClose={closeModal}
                 aria-labelledby="max-width-dialog-title"
+                onKeyDown={arrowPressAction}
             >
                 {showDescription(selectedMovie)}
                 <DialogActions>

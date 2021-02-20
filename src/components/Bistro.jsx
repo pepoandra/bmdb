@@ -421,7 +421,6 @@ function Bistro () {
                         </SuggestionManager>
                     </Grid>
                 </Grid>
-                {JSON.stringify(state)}
             </Box>
             <div>
                 <Modal
