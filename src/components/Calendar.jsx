@@ -58,7 +58,6 @@ import Slider from '@material-ui/core/Slider';
      async function handleEventClick (event) {
          await setSelectedMovie(event.title)
          getMovieInfo(event.title)
-         const person = persons.find(p => p.id === event.person)
          openModal()
      }
     function openModal () {
@@ -96,7 +95,6 @@ import Slider from '@material-ui/core/Slider';
     }
     useEffect(() => {
         fetchMovies()
-        fetchPersons()
     }, [])
 
     function setHours (d) {
@@ -109,10 +107,7 @@ import Slider from '@material-ui/core/Slider';
         const fetchedMovies = apiData.data.listMovies.items;
         await setMovies(fetchedMovies.filter(n => !n._deleted ).sort((a, b) => b.date - a.date))
     }
-    async function fetchPersons () {
-        const apiData = await API.graphql({ query: listPersons })
-        setPersons(apiData.data.listPersons.items)
-    }
+
 
     function getFlagAvatar(movie) {
         const avatarStyles = {
@@ -201,7 +196,7 @@ import Slider from '@material-ui/core/Slider';
                             return <Grid item xs={6}>
                                 <Typography>{n}</Typography>
                                 <Slider
-                                    defaultValue={rate}
+                                    value={rate}
                                     aria-label={n}
                                     aria-labelledby="discrete-slider-always"
                                     valueLabelDisplay="on"
