@@ -269,6 +269,9 @@ import Slider from '@material-ui/core/Slider';
          if([37, 40].includes(event.keyCode)){
              selectPrevMovie()
          }
+         if(event.keyCode === 27){
+             closeModal()
+         }
      }
     return (
         <div className="App">
