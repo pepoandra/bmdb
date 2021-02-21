@@ -29,6 +29,10 @@ import { withAuthenticator, AmplifySignOut } from '@aws-amplify/ui-react';
 import { Auth } from 'aws-amplify';
 import {NotFound} from "./NotFound";
 import {SuggestionManager} from "./SuggestionManager";
+import Accordion from "@material-ui/core/Accordion";
+import AccordionSummary from "@material-ui/core/AccordionSummary";
+import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
+import AccordionDetails from "@material-ui/core/AccordionDetails";
 
 
 const initialState = {
@@ -39,12 +43,21 @@ const initialState = {
     rating: 0,
     tags: '',
     newTag: '',
-    watchers: '',
+    watchedBy: [],
     thoughts: '',
     savedSuccess: false,
     savedError: false,
     date: '',
     errorMsg: '',
+}
+const filterInitialState = {
+    watchedByUser: false,
+    toRateByUser: false,
+    tags: [],
+    pickedBy: '',
+    corkedBy: '',
+    startDate: '',
+    endDate: '',
 }
 
 const useStyles = makeStyles((theme) => ({
@@ -63,6 +76,11 @@ const useStyles = makeStyles((theme) => ({
         boxShadow: theme.shadows[5],
         outline: 'none'
     },
+    hideBorder: {
+        '&.MuiExpansionPanel-root:before': {
+            display: 'none',
+        },
+    },
 }));
 
 function Bistro () {
@@ -70,6 +88,7 @@ function Bistro () {
     const [personLoggedIn, setPersonLoggedIn] = useState('')
     const [isCreateModalOpen, setIsCreateModalOpen] = useState(false)
     const classes = useStyles();
+    const [filters, setFilters] = useState(filterInitialState)
 
     useEffect(() => {
         fetchMovies()
@@ -99,7 +118,7 @@ function Bistro () {
         if(!m) return;
         setState({
             ...state,
-            watchers: m.watchedBy,
+            watchedBy: m.watchedBy,
             pickedBy: m.pickedBy,
             corkedBy: m.corkedBy,
             title: m.title,
@@ -143,7 +162,7 @@ function Bistro () {
         const newMovie = {
             id: actualMovie.id,
             title: state.title,
-            watchedBy: state.watchers,
+            watchedBy: state.watchedBy,
             pickedBy: state.pickedBy,
             corkedBy: state.corkedBy,
             [`rate${personLoggedIn}`]: state.rating,
@@ -166,20 +185,35 @@ function Bistro () {
             }, 7000)
         }
     }
+    function applyFilters(m) {
+        let res = true
+        if(filters.watchedByUser) {
+            res = res & m.watchedBy.includes(personLoggedIn)
+        }
+        if(filters.toRateByUser) {
+            res = res & (!m[`rate${personLoggedIn}`])
+        }
+        return res
+    }
     function validateMovie(movie){
         if(movie.watchedBy.length === 0 ) return false;
         return true;
     }
     function isNameChecked(name) {
-        return state.watchers.includes(name)
+        return state.watchedBy.includes(name)
     }
-
+    function isFilterChecked(filter) {
+        return filters[filter]
+    }
     async function handleChangeWatchers(name){
         if(isNameChecked(name)){
-            await setState({...state, watchers: state.watchers.filter(w => w !== name) })
+            await setState({...state, watchedBy: state.watchedBy.filter(w => w !== name) })
         } else {
-            await setState({...state, watchers: state.watchers.concat([name]) })
+            await setState({...state, watchedBy: state.watchedBy.concat([name]) })
         }
+    }
+    async function handleFilterChange(filter){
+        await setFilters({...filters, [filter]: !filters[filter]})
     }
     function handleOnDeleteTag(tag) {
         setState({...state, tags: state.tags.filter(t => t !== tag)})
@@ -211,6 +245,19 @@ function Bistro () {
                 />
             }
             label={name}
+        />;
+    }
+    function displayFilterCheckbox(filter) {
+        return <FormControlLabel
+            control={
+                <Checkbox
+                    checked={isFilterChecked(filter)}
+                    name={filter}
+                    color="primary"
+                    onChange={() => handleFilterChange(filter)}
+                />
+            }
+            label={filter.split('By')[0]}
         />;
     }
     function onChangeDate(event) {
@@ -323,7 +370,6 @@ function Bistro () {
                             id="datetime-local"
                             type="datetime-local"
                             value={state.date}
-
                             InputLabelProps={{
                                 shrink: true,
                             }}
@@ -408,8 +454,11 @@ function Bistro () {
                                 Create Movie
                             </Button>
                             {displayVerticalSpace(15)}
-                            <Divider/>
-                            {displayVerticalSpace(15)}
+                            <FormGroup row>
+                                {displayFilterCheckbox('watchedByUser')}
+                                {displayFilterCheckbox('toRateByUser')}
+                            </FormGroup>
+
                             <TextField
                                 fullWidth
                                 id="searchedForMovie"
@@ -425,7 +474,7 @@ function Bistro () {
                                 aria-label="main mailbox folders"
                                 style={{maxHeight: '50vw', overflow: 'auto'}}
                             >
-                                {state.movies.filter(filterDisplayedMovies).map(generateMovieItem)}
+                                {state.movies.filter(applyFilters).filter(filterDisplayedMovies).map(generateMovieItem)}
                             </List>
                         </Grid>
                         <Grid item xs={8}>
