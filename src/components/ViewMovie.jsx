@@ -112,7 +112,7 @@ export function ViewMovie (props) {
         height: '45px',
         width: '45px',
     }
-    return <Card>
+    return <Card id={'movieViewer'}>
         <Grid container>
             <Grid item xs={6}>
                 <CardHeader
@@ -155,7 +155,7 @@ export function ViewMovie (props) {
                 {displayVerticalSpace(15)}
                 <Grid container>
                     {NAMES.map(n => {
-                        if(!movie[`rate${n}`]) return  <Grid item xs={6}/>
+                        if(!movie[`rate${n}`]) return  <Grid item xs={6}>{displayVerticalSpace(55)}</Grid>
                         const rate = movie[`rate${n}`]
                         return <Grid item xs={6}>
                             <Typography>{n}</Typography>

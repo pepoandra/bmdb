@@ -35,6 +35,7 @@ const initialState = {
     movies: [],
     searchedForMovie: '',
     selectedMovie: '',
+    title: '',
     rating: 0,
     tags: '',
     newTag: '',
@@ -87,7 +88,9 @@ function Bistro () {
             onClickMovie(fetchedMovies[0].title)
         }
     }
-
+    function handleTitleChange(event) {
+        setState({...state, title: event.target.value})
+    }
     function filterDisplayedMovies(movie) {
         return movie.title.toLowerCase().includes(state.searchedForMovie.toLowerCase())
     }
@@ -99,6 +102,7 @@ function Bistro () {
             watchers: m.watchedBy,
             pickedBy: m.pickedBy,
             corkedBy: m.corkedBy,
+            title: m.title,
             rating: m[`rate${personLoggedIn}`] || 0,
             tags: m.tags,
             newTag: '',
@@ -138,6 +142,7 @@ function Bistro () {
         const actualMovie = state.movies.find(m => m.title === state.selectedMovie)
         const newMovie = {
             id: actualMovie.id,
+            title: state.title,
             watchedBy: state.watchers,
             pickedBy: state.pickedBy,
             corkedBy: state.corkedBy,
@@ -236,7 +241,19 @@ function Bistro () {
             />
             <CardContent>
                 <Grid container>
+                    <Grid item xs={7}>
+                        <TextField
+                            fullWidth
+                            id="title"
+                            label="Title"
+                            value={state.title}
+                            onChange={handleTitleChange}
+                        />
+                    </Grid>
                     <Grid item xs={2}>
+                        {displayVerticalSpace(45)}
+                    </Grid>
+                    <Grid item xs={3}>
                         <TextField
                             type={'number'}
                             fullWidth
@@ -248,7 +265,6 @@ function Bistro () {
                             InputProps={{ endAdornment:<InputAdornment position="end">/10</InputAdornment>}}
                         />
                     </Grid>
-                    <Grid item xs={10}></Grid>
                     <Grid item xs={5}>
                         <Autocomplete
                             options={options}
@@ -383,61 +399,59 @@ function Bistro () {
     }
     return !NAMES.includes(personLoggedIn)? <NotFound/> :
         (
-        <Container maxWidth="md">
-            <Typography variant={'h2'}>{personLoggedIn}</Typography>
-            <Box my={4}>
-                <Grid container spacing={2}>
-                    <Grid item xs={4}>
-                        <Button onClick={clickCreateMovie} fullWidth variant="contained" color="primary">
-                            Create Movie
-                        </Button>
-                        {displayVerticalSpace(15)}
-                        <Divider/>
-                        {displayVerticalSpace(15)}
-                        <TextField
-                            fullWidth
-                            id="searchedForMovie"
-                            autoComplete={'off'}
-                            label={'Select movie'}
-                            onChange={(event) => {
-                                setState({...state, searchedForMovie: event.target.value})
-                            }}
-                            value={ state.searchedForMovie }
-                        />
-                        <List
-                            component="nav"
-                            aria-label="main mailbox folders"
-                            style={{maxHeight: '50vw', overflow: 'auto'}}
-                        >
-                            {state.movies.filter(filterDisplayedMovies).map(generateMovieItem)}
-                        </List>
+            <Container maxWidth="md">
+                <Typography variant={'h2'}>{personLoggedIn}</Typography>
+                <Box my={4}>
+                    <Grid container spacing={2}>
+                        <Grid item xs={4}>
+                            <Button onClick={clickCreateMovie} fullWidth variant="contained" color="primary">
+                                Create Movie
+                            </Button>
+                            {displayVerticalSpace(15)}
+                            <Divider/>
+                            {displayVerticalSpace(15)}
+                            <TextField
+                                fullWidth
+                                id="searchedForMovie"
+                                autoComplete={'off'}
+                                label={'Select movie'}
+                                onChange={(event) => {
+                                    setState({...state, searchedForMovie: event.target.value})
+                                }}
+                                value={ state.searchedForMovie }
+                            />
+                            <List
+                                component="nav"
+                                aria-label="main mailbox folders"
+                                style={{maxHeight: '50vw', overflow: 'auto'}}
+                            >
+                                {state.movies.filter(filterDisplayedMovies).map(generateMovieItem)}
+                            </List>
+                        </Grid>
+                        <Grid item xs={8}>
+                            {displayMovie(state.selectedMovie)}
+                        </Grid>
+                        <Grid item xs={12}>
+                            <SuggestionManager/>
+                        </Grid>
                     </Grid>
-                    <Grid item xs={8}>
-                        {displayMovie(state.selectedMovie)}
-                    </Grid>
-                    <Grid item xs={12}>
-                        <SuggestionManager>
-
-                        </SuggestionManager>
-                    </Grid>
-                </Grid>
-            </Box>
-            <div>
-                <Modal
-                    open={isCreateModalOpen}
-                    aria-labelledby="simple-modal-title"
-                    aria-describedby="simple-modal-description"
-                    className={classes.modal}
-                    onEscapeKeyDown={handleCloseCreateMovie}
-                >
-                    <div className={classes.paper}>
-                        <CreateMovie closeModal={handleCloseCreateMovie} personLoggedIn={personLoggedIn}/>
-                    </div>
-                </Modal>
-            </div>
-            <AmplifySignOut/>
-        </Container>
-    )
+                </Box>
+                <div>
+                    <Modal
+                        open={isCreateModalOpen}
+                        aria-labelledby="simple-modal-title"
+                        aria-describedby="simple-modal-description"
+                        className={classes.modal}
+                        onEscapeKeyDown={handleCloseCreateMovie}
+                    >
+                        <div className={classes.paper}>
+                            <CreateMovie closeModal={handleCloseCreateMovie} personLoggedIn={personLoggedIn}/>
+                        </div>
+                    </Modal>
+                </div>
+                <AmplifySignOut/>
+            </Container>
+        )
 }
 
 export default withAuthenticator(Bistro);

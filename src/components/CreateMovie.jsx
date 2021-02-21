@@ -125,10 +125,10 @@ export function CreateMovie (props) {
         setState({...state, thoughts: event.target.value})
     }
     const options = DROPDOWN_OPTIONS.map(n => {
-            return {
-                title: n,
-            }
-        })
+        return {
+            title: n,
+        }
+    })
     const tagPlaceHolder = state.tags.length === 0? displayVerticalSpace(47) : null;
 
     return <Card className={'createMovieCard'}>
