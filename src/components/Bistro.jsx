@@ -104,7 +104,6 @@ function Bistro () {
         if(fetchedMovies && fetchedMovies.length > 0){
             const cleanMovies = fetchedMovies.filter(n => !n._deleted );
             await setState({...state, movies: cleanMovies })
-            onClickMovie(fetchedMovies[0].title)
         }
     }
     function handleTitleChange(event) {
@@ -354,7 +353,7 @@ function Bistro () {
                             rows={4}
                             variant="outlined"
                             onChange={handleThoughtsChange}
-                            value={event.thoughts}
+                            value={state.thoughts}
                         />
                         {displayVerticalSpace(25)}
                     </Grid>
