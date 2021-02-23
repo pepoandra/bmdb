@@ -29,10 +29,6 @@ import { withAuthenticator, AmplifySignOut } from '@aws-amplify/ui-react';
 import { Auth } from 'aws-amplify';
 import {NotFound} from "./NotFound";
 import {SuggestionManager} from "./SuggestionManager";
-import Accordion from "@material-ui/core/Accordion";
-import AccordionSummary from "@material-ui/core/AccordionSummary";
-import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
-import AccordionDetails from "@material-ui/core/AccordionDetails";
 
 
 const initialState = {
@@ -128,7 +124,6 @@ function Bistro () {
             thoughts: m.thoughts,
             date: moment(new Date(m.date)).format('YYYY-MM-DDTHH:mm')
         })
-
     }
 
     function handleCloseCreateMovie() {
@@ -446,7 +441,7 @@ function Bistro () {
         (
             <Container maxWidth="md">
                 <Typography variant={'h2'}>{personLoggedIn}</Typography>
-                <Box my={4}>
+                <Box my={2}>
                     <Grid container spacing={2}>
                         <Grid item xs={4}>
                             <Button onClick={clickCreateMovie} fullWidth variant="contained" color="primary">

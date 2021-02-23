@@ -16,6 +16,7 @@ import {CalendarComponent} from "./components/Calendar";
 import {Scores} from "./components/Scores";
 import {Suggestions} from "./components/Suggestions";
 import Bistro from "./components/Bistro";
+import {MovieExplorer} from "./components/MovieExplorer";
 
 const useStyles = makeStyles((theme) =>
     createStyles({
@@ -44,6 +45,7 @@ export default function BasicExample () {
                         centered
                     >
                         <Tab label={'Calendar'} component={Link} to={'/'}/>
+                        <Tab label={'Movies'} component={Link} to={'/movies'}/>
                         <Tab label={'Rules'} component={Link} to={'/rules'}/>
                         <Tab label={'Scoreboard'} component={Link} to={'/scores'}/>
                         <Tab label={'Suggestions'} component={Link} to={'/suggestions'}/>
@@ -54,6 +56,9 @@ export default function BasicExample () {
                 <Switch>
                     <Route exact path="/">
                         <CalendarComponent />
+                    </Route>
+                    <Route path="/movies">
+                        <MovieExplorer  />
                     </Route>
                     <Route path="/rules">
                         <Rules  />

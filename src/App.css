@@ -108,6 +108,7 @@
 .minicork {
   height: 5vmin;
   pointer-events: none;
+  margin-right: auto;
 }
 .cork {
   height: 10vmin;

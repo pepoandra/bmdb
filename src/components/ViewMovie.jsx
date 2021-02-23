@@ -133,14 +133,14 @@ export function ViewMovie (props) {
                     })}
                 </div>
                 <Grid container>
-                    <Grid item xs={1}>
+                    <Grid item xs={1} style={{marginRight: '10px'}}>
                         <img src={cork} alt="Logo" className={'minicork'}/>
                     </Grid>
                     <Grid item xs={4}>
                         {displayVerticalSpace(10)}
                         <Typography> {movie.corkedBy} </Typography>
                     </Grid>
-                    <Grid item xs={1} style={{marginRight: '10px'}}>
+                    <Grid item xs={1} style={{marginRight: '17px'}}>
                         <img src={movieImg} alt="Logo" className={'minicork'}/>
                     </Grid>
                     <Grid item xs={3}>
