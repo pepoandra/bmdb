@@ -11,7 +11,6 @@ import { createStyles, makeStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
-import {Rules} from "./components/Rules";
 import {CalendarComponent} from "./components/Calendar";
 import {Scores} from "./components/Scores";
 import {Suggestions} from "./components/Suggestions";
@@ -46,7 +45,6 @@ export default function BasicExample () {
                     >
                         <Tab label={'Calendar'} component={Link} to={'/'}/>
                         <Tab label={'Movies'} component={Link} to={'/movies'}/>
-                        <Tab label={'Rules'} component={Link} to={'/rules'}/>
                         <Tab label={'Scoreboard'} component={Link} to={'/scores'}/>
                         <Tab label={'Suggestions'} component={Link} to={'/suggestions'}/>
                         <Tab label={'Bistro'} component={Link} to={'/bistro'}/>
@@ -59,9 +57,6 @@ export default function BasicExample () {
                     </Route>
                     <Route path="/movies">
                         <MovieExplorer  />
-                    </Route>
-                    <Route path="/rules">
-                        <Rules  />
                     </Route>
                     <Route path="/scores">
                         <Scores />

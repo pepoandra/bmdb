@@ -119,7 +119,7 @@
 .rulesCard {
   display: block;
   transitionDuration: 0.3s;
-  height: 57vw;
+  height: 100%;
 }
 
 .tags {

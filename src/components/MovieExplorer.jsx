@@ -7,7 +7,7 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import {API} from "aws-amplify";
 import {listMovies} from "../graphql/queries";
-import {displayVerticalSpace} from "../helpers/helpers";
+import {checker, displayVerticalSpace} from "../helpers/helpers";
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
 import Typography from "@material-ui/core/Typography";
@@ -68,7 +68,6 @@ export function MovieExplorer () {
             onClickMovie(fetchedMovies[0].title)
         }
     }
-    let checker = (arr, target) => target.every(v => arr.includes(v));
 
     function applyFilters(m) {
         let res = true
