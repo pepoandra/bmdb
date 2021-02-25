@@ -13,6 +13,7 @@
     "aws-amplify": "^3.3.17",
     "flag-icon-css": "^3.5.0",
     "graphql": "^0.13.2",
+    "materialui-daterange-picker": "^1.1.92",
     "moment": "^2.29.1",
     "moviedb-promise": "^3.1.6",
     "node-sass": "^5.0.0",

@@ -129,25 +129,6 @@ export function MovieExplorer () {
         }
 
     }
-    function displayFilterCheckbox(filter) {
-        return <FormControlLabel
-            control={
-                <Checkbox
-                    checked={true}
-                    name={filter}
-                    color="primary"
-                    onChange={() => true}
-                />
-            }
-            label={filter.split('By')[0]}
-        />;
-    }
-    function handleOnDeleteTag(tag) {
-        setFilters({...filters, tags: filters.tags.filter(t => t !== tag)})
-    }
-    function handleDeleteWatchedBy(watcher) {
-        setFilters({...filters, watchedBy: filters.watchedBy.filter(t => t !== watcher)})
-    }
 
     function generateMovieItem(movie) {
         return (<ListItem button onClick={() => onClickMovie(movie.title)}>

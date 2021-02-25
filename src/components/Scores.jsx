@@ -13,11 +13,16 @@ import Paper from '@material-ui/core/Paper';
 import {API} from "aws-amplify";
 import {listMovies} from "../graphql/queries";
 import {checker, displayVerticalSpace} from "../helpers/helpers";
-import {NAMES} from "../helpers/constants";
+import { NAMES } from "../helpers/constants";
 import Accordion from "@material-ui/core/Accordion";
 import AccordionSummary from "@material-ui/core/AccordionSummary";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import AccordionDetails from "@material-ui/core/AccordionDetails";
+import { DateRangePicker } from "materialui-daterange-picker";
+import Button from "@material-ui/core/Button";
+
+import Dialog from "@material-ui/core/Dialog";
+import DialogActions from "@material-ui/core/DialogActions";
 
 const StyledTableCell = withStyles((theme) => ({
     head: {
@@ -44,35 +49,15 @@ const initialState = {
 function createData(name, sinks, own, points) {
     return { name, sinks, own, points };
 }
-
-const rows = [
-    createData('Seb', 6, 3, 9),
-    createData('Amy', 5, 2, 7),
-    createData('Dov', 4, 2, 6),
-    createData('Shane', 4, 1, 5),
-];
-
 function createDataMovies(name, movies, average, points) {
     return { name, movies, average, points };
 }
 
-const movieRows = [
-    createDataMovies('Seb', 4, 3, 7),
-    createDataMovies('Shane', 3, 4, 7),
-    createDataMovies('Amy', 2, 3, 5),
-    createDataMovies('Dov', 1, 4, 5),
-];
-
-const useStyles = makeStyles({
-    table: {
-        minWidth: 700,
-    },
-});
 function filterCorkMovies(m) {
-    return !m._deleted & NAMES.includes(m.corkedBy) & checker(NAMES, m.watchedBy)
+    return !m._deleted & NAMES.includes(m.corkedBy) & checker(m.watchedBy, NAMES)
 }
 function filterCinpehileMovies(m) {
-    return !m._deleted & NAMES.includes(m.pickedBy) & checker(NAMES, m.watchedBy)
+    return !m._deleted & NAMES.includes(m.pickedBy) & checker(m.watchedBy, NAMES)
 }
 
 function getCorkScores(movies){
@@ -127,8 +112,21 @@ function getCinephileScores(movies){
     return points
 }
 
+const dialogPaper = {
+    minHeight: '50vh',
+    maxHeight: '90vh',
+    overflow: 'scroll',
+}
+
 export function Scores () {
     const [state, setState] = useState(initialState)
+    const [dateRangeCork, setDateRangeCork] = React.useState({});
+    const [openCork, setOpenCork] = React.useState(false);
+    const toggleCork = () => setOpenCork(!openCork);
+
+    const [dateRangeCinephile, setDateRangeCinephile] = React.useState({});
+    const [openCinephile, setOpenCinephile] = React.useState(false);
+    const toggleCinephile = () => setOpenCinephile(!openCinephile);
 
     function getCorkRows(movies) {
         const points = getCorkScores(movies)
@@ -144,6 +142,10 @@ export function Scores () {
         })
         return  res.sort( (a, b) => b.points - a.points)
     }
+    function closeCalendars () {
+        setOpenCinephile(false)
+        setOpenCork(false)
+    }
 
     async function fetchMovies () {
         const apiData = await API.graphql({ query: listMovies })
@@ -153,7 +155,6 @@ export function Scores () {
             const cinephileMovies = fetchedMovies.filter(filterCinpehileMovies);
             await setState({...state, corkMovies, cinephileMovies  })
             getCorkScores(corkMovies)
-
         }
     }
 
@@ -175,6 +176,9 @@ export function Scores () {
                                 subheader={`It's the final corkdown`}
                             />
                             <CardContent>
+                                <div style={{textAlign: 'right'}}>
+                                    <Button onClick={toggleCork}></Button>
+                                </div>
                                 <TableContainer component={Paper}>
                                     <Table aria-label="customized table">
                                         <TableHead>
@@ -277,10 +281,13 @@ export function Scores () {
                                     <img src={movieImg} alt="Logo" className={'cork'}/>
                                 }
                                 titleTypographyProps={{variant: 'h5'}}
-                                title={'Points'}
+                                title={'Movie picks'}
                                 subheader={`Cinephile hall of fame`}
                             />
                             <CardContent>
+                                <div style={{textAlign: 'right'}}>
+                                    <Button onClick={toggleCinephile}></Button>
+                                </div>
                                 <TableContainer component={Paper}>
                                     <Table aria-label="customized table">
                                         <TableHead>
@@ -366,8 +373,33 @@ export function Scores () {
                     </Grid>
                 </Grid>
             </Box>
+            <Dialog
+                fullWidth={true}
+                maxWidth={'md'}
+                scroll={'body'}
+                classes={{dialogPaper}}
+                paperProps={{className: 'paperDialog'}}
+                open={openCork | openCinephile}
+                onClose={closeCalendars}
+                aria-labelledby="max-width-dialog-title"
+            >
+                <DateRangePicker
+                    open={openCork}
+                    toggle={toggleCork}
+                    onChange={(range) => setDateRangeCork(range)}
+                />
+                <DateRangePicker
+                    open={openCinephile}
+                    toggle={toggleCork}
+                    onChange={(range) => setDateRangeCinephile(range)}
+                />
+                <DialogActions>
+                    <Button onClick={closeCalendars} color="primary">
+                        OK
+                    </Button>
+                </DialogActions>
+            </Dialog>
         </Container>
     )
 }
-
 
