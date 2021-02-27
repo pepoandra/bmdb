@@ -54,9 +54,6 @@ function createDataMovies(name, movies, average, points) {
 }
 
 
-
-
-
 function getCorkScores(movies){
     let points = {}
     NAMES.map(n => {
@@ -126,10 +123,10 @@ export function Scores () {
     const toggleCinephile = () => setOpenCinephile(!openCinephile);
 
     function filterCorkMovies(m) {
-        return !m._deleted & NAMES.includes(m.corkedBy) & checker(m.watchedBy, NAMES) & isMovieInDateRange(m, dateRangeCork)
+        return !m._deleted && NAMES.includes(m.corkedBy) && checker(m.watchedBy, NAMES)
     }
     function filterCinpehileMovies(m) {
-        return !m._deleted & NAMES.includes(m.pickedBy) & checker(m.watchedBy, NAMES) & isMovieInDateRange(m, dateRangeCinephile)
+        return !m._deleted && NAMES.includes(m.pickedBy) && checker(m.watchedBy, NAMES)
     }
 
     function getCorkRows(movies) {
@@ -150,14 +147,15 @@ export function Scores () {
         setOpenCinephile(false)
         setOpenCork(false)
     }
+
     function isMovieInDateRange(movie, dateRange){
-        if(!dateRange || !dateRange.startDate)
-            return true
-        alert('hola')
-        const endDate = new Date(dateRange.endDate)
-        const startDate = new Date(dateRange.startDate)
+        const endDate = Date.parse(dateRange.endDate)
+        const startDate = Date.parse(dateRange.startDate)
+        if(isNaN(endDate) || isNaN(startDate)) {
+            return true;
+        }
         const movieDate = new Date(movie.date)
-        return startDate < movieDate && movieDate < endDate
+        return startDate < movieDate & movieDate < endDate
     }
 
     async function fetchMovies () {
@@ -177,7 +175,6 @@ export function Scores () {
     return (
         <Container maxWidth="lg">
             <Box my={4}>
-                {JSON.stringify(dateRangeCinephile)}
                 <Grid container>
                     <Grid item xs={6}>
                         <Card className={'rulesCard'}>
@@ -204,7 +201,9 @@ export function Scores () {
                                             </TableRow>
                                         </TableHead>
                                         <TableBody>
-                                            {getCorkRows(state.corkMovies).map((row) => (
+                                            {getCorkRows(state.corkMovies.filter(m => {
+                                                return isMovieInDateRange(m, dateRangeCork)
+                                            })).map((row) => (
                                                 <StyledTableRow key={row.name}>
                                                     <StyledTableCell component="th" scope="row">
                                                         {row.name}
@@ -313,7 +312,9 @@ export function Scores () {
                                             </TableRow>
                                         </TableHead>
                                         <TableBody>
-                                            {getCinephileRows(state.cinephileMovies).map((row) => (
+                                            {getCinephileRows(state.cinephileMovies.filter(m => {
+                                                return isMovieInDateRange(m, dateRangeCinephile)
+                                            })).map((row) => (
                                                 <StyledTableRow key={row.name}>
                                                     <StyledTableCell component="th" scope="row">
                                                         {row.name}
