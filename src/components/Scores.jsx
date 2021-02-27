@@ -13,7 +13,7 @@ import Paper from '@material-ui/core/Paper';
 import {API} from "aws-amplify";
 import {listMovies} from "../graphql/queries";
 import {checker, displayVerticalSpace} from "../helpers/helpers";
-import { NAMES } from "../helpers/constants";
+import {DateRangeLabels, NAMES} from "../helpers/constants";
 import Accordion from "@material-ui/core/Accordion";
 import AccordionSummary from "@material-ui/core/AccordionSummary";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
@@ -402,11 +402,13 @@ export function Scores () {
                     open={openCork}
                     toggle={toggleCork}
                     onChange={(range) => setDateRangeCork(range)}
+                    definedRanges={DateRangeLabels}
                 />
                 <DateRangePicker
                     open={openCinephile}
                     toggle={toggleCork}
                     onChange={(range) => setDateRangeCinephile(range)}
+                    definedRanges={DateRangeLabels}
                 />
                 <DialogActions>
                     <Button onClick={closeCalendars} color="primary">
