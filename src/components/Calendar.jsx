@@ -72,7 +72,7 @@ function CalendarComponent () {
     }
 
     async function fetchMovies () {
-        const apiData = await API.graphql({ query: listMovies })
+        const apiData = await API.graphql(graphqlOperation(listMovies, {limit: 1000}))
         const fetchedMovies = apiData.data.listMovies.items;
         await setMovies(fetchedMovies.filter(n => !n._deleted ).sort((a, b) => new Date(b.date) - new Date(a.date)))
     }

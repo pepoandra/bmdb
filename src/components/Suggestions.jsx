@@ -6,7 +6,7 @@ import CardHeader from "@material-ui/core/CardHeader";
 import Grid from "@material-ui/core/Grid";
 import CardContent from "@material-ui/core/CardContent";
 import {displayVerticalSpace} from "../helpers/helpers"; // Tell webpack this JS file uses this image
-import { listSuggestions} from '../graphql/queries'
+import {listMovies, listSuggestions} from '../graphql/queries'
 import { createSuggestion } from "../graphql/mutations";
 import { API, graphqlOperation } from 'aws-amplify'
 
@@ -19,7 +19,8 @@ export function Suggestions () {
         fetchSuggestions()
     }, [])
     async function fetchSuggestions () {
-        const apiData = await API.graphql({ query: listSuggestions })
+        const apiData = await API.graphql(graphqlOperation(listSuggestions, {limit: 1000}))
+
         await setSuggestions(apiData.data.listSuggestions.items.filter(s => !s._deleted))
     }
 

@@ -12,7 +12,7 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
 import Typography from "@material-ui/core/Typography";
 import moment from 'moment'
-import { Auth } from 'aws-amplify';
+import { Auth, graphqlOperation } from 'aws-amplify';
 
 import {ViewMovie} from "./ViewMovie";
 import FormGroup from "@material-ui/core/FormGroup";
@@ -20,8 +20,8 @@ import Chip from "@material-ui/core/Chip";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import {DROPDOWN_OPTIONS, NAMES} from "../helpers/constants";
 
-
 const initialState = {
+    unfilteredMovies: [],
     movies: [],
     searchedForMovie: '',
     selectedMovie: '',
@@ -55,7 +55,8 @@ export function MovieExplorer () {
     }, [])
 
     async function fetchMovies () {
-        const apiData = await API.graphql({ query: listMovies })
+        const apiData = await API.graphql(graphqlOperation(listMovies, {limit: 1000}))
+
         const fetchedMovies = apiData.data.listMovies.items;
         if(fetchedMovies && fetchedMovies.length > 0){
             const cleanMovies = fetchedMovies.filter(n => !n._deleted ).sort((a, b) => new Date(b.date) - new Date(a.date))
@@ -63,7 +64,7 @@ export function MovieExplorer () {
             cleanMovies.map(m => {
                 tags = tags.concat(m.tags)
             })
-            await setState({...state, movies: cleanMovies, allTags: noDuplicate(tags) })
+            await setState({...state, movies: cleanMovies, allTags: noDuplicate(tags), unfilteredMovies: fetchedMovies })
 
             onClickMovie(fetchedMovies[0].title)
         }

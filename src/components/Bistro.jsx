@@ -95,7 +95,7 @@ function Bistro () {
         await setPersonLoggedIn(data.idToken.payload.preferred_username)
     }, [])
     async function fetchMovies () {
-        const apiData = await API.graphql({ query: listMovies })
+        const apiData = await API.graphql(graphqlOperation(listMovies, {limit: 1000}))
         const fetchedMovies = apiData.data.listMovies.items;
         if(fetchedMovies && fetchedMovies.length > 0){
             const cleanMovies = fetchedMovies.filter(n => !n._deleted );

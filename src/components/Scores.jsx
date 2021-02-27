@@ -53,12 +53,9 @@ function createDataMovies(name, movies, average, points) {
     return { name, movies, average, points };
 }
 
-function filterCorkMovies(m) {
-    return !m._deleted & NAMES.includes(m.corkedBy) & checker(m.watchedBy, NAMES)
-}
-function filterCinpehileMovies(m) {
-    return !m._deleted & NAMES.includes(m.pickedBy) & checker(m.watchedBy, NAMES)
-}
+
+
+
 
 function getCorkScores(movies){
     let points = {}
@@ -128,6 +125,13 @@ export function Scores () {
     const [openCinephile, setOpenCinephile] = React.useState(false);
     const toggleCinephile = () => setOpenCinephile(!openCinephile);
 
+    function filterCorkMovies(m) {
+        return !m._deleted & NAMES.includes(m.corkedBy) & checker(m.watchedBy, NAMES) & isMovieInDateRange(m, dateRangeCork)
+    }
+    function filterCinpehileMovies(m) {
+        return !m._deleted & NAMES.includes(m.pickedBy) & checker(m.watchedBy, NAMES) & isMovieInDateRange(m, dateRangeCinephile)
+    }
+
     function getCorkRows(movies) {
         const points = getCorkScores(movies)
         const res = Object.keys(points).map(n => {
@@ -145,6 +149,15 @@ export function Scores () {
     function closeCalendars () {
         setOpenCinephile(false)
         setOpenCork(false)
+    }
+    function isMovieInDateRange(movie, dateRange){
+        if(!dateRange || !dateRange.startDate)
+            return true
+        alert('hola')
+        const endDate = new Date(dateRange.endDate)
+        const startDate = new Date(dateRange.startDate)
+        const movieDate = new Date(movie.date)
+        return startDate < movieDate && movieDate < endDate
     }
 
     async function fetchMovies () {
@@ -164,6 +177,7 @@ export function Scores () {
     return (
         <Container maxWidth="lg">
             <Box my={4}>
+                {JSON.stringify(dateRangeCinephile)}
                 <Grid container>
                     <Grid item xs={6}>
                         <Card className={'rulesCard'}>
@@ -177,7 +191,7 @@ export function Scores () {
                             />
                             <CardContent>
                                 <div style={{textAlign: 'right'}}>
-                                    <Button onClick={toggleCork}></Button>
+                                    <Button onClick={toggleCork}>Select Date</Button>
                                 </div>
                                 <TableContainer component={Paper}>
                                     <Table aria-label="customized table">
@@ -286,7 +300,7 @@ export function Scores () {
                             />
                             <CardContent>
                                 <div style={{textAlign: 'right'}}>
-                                    <Button onClick={toggleCinephile}></Button>
+                                    <Button onClick={toggleCinephile}>Select Date</Button>
                                 </div>
                                 <TableContainer component={Paper}>
                                     <Table aria-label="customized table">
