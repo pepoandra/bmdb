@@ -7,3 +7,7 @@ export function displayVerticalSpace(margin) {
 export function checker (arr, target) {
     return target.every(v => arr.includes(v));
 }
+
+export function noDuplicate(arr) {
+    return [...new Set(arr)]
+}

@@ -58,7 +58,6 @@ export function SuggestionManager () {
         }
         try {
             const algo = await API.graphql(graphqlOperation(deleteSuggestion, {input: input }))
-            alert('success')
             setState({...state, savedSuccess: true})
             await fetchSuggestions();
         } catch (err) {

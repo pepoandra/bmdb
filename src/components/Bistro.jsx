@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import Box from '@material-ui/core/Box';
-import {Button, Card, Container, FormLabel, InputAdornment, Link, Paper, TextField} from "@material-ui/core";
+import {AppBar, Button, Card, Container, FormLabel, InputAdornment, Link, Paper, TextField} from "@material-ui/core";
 import CardHeader from "@material-ui/core/CardHeader";
 import Grid from "@material-ui/core/Grid";
 import CardContent from "@material-ui/core/CardContent";
@@ -9,7 +9,7 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import {API, graphqlOperation} from "aws-amplify";
 import {listMovies} from "../graphql/queries";
-import {displayVerticalSpace} from "../helpers/helpers";
+import {displayVerticalSpace, noDuplicate} from "../helpers/helpers";
 import Chip from '@material-ui/core/Chip';
 import Divider from '@material-ui/core/Divider';
 import FormGroup from '@material-ui/core/FormGroup';
@@ -29,10 +29,15 @@ import { withAuthenticator, AmplifySignOut } from '@aws-amplify/ui-react';
 import { Auth } from 'aws-amplify';
 import {NotFound} from "./NotFound";
 import {SuggestionManager} from "./SuggestionManager";
+import {LinkManager} from "./LinkManager";
+import Tab from "@material-ui/core/Tab";
+import Tabs from "@material-ui/core/Tabs";
 
 
 const initialState = {
+    selectedTab: 0,
     movies: [],
+    allTags: [],
     searchedForMovie: '',
     selectedMovie: '',
     title: '',
@@ -79,6 +84,25 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
+function TabPanel(props) {
+    const { children, value, index, ...other } = props;
+
+    return (
+        <div
+            role="tabpanel"
+            hidden={value !== index}
+            id={`simple-tabpanel-${index}`}
+            aria-labelledby={`simple-tab-${index}`}
+            {...other}
+        >
+            {value === index && (
+                <Box p={3}>
+                    <Typography>{children}</Typography>
+                </Box>
+            )}
+        </div>
+    );
+}
 function Bistro () {
     const [state, setState] = useState(initialState)
     const [personLoggedIn, setPersonLoggedIn] = useState('')
@@ -99,7 +123,11 @@ function Bistro () {
         const fetchedMovies = apiData.data.listMovies.items;
         if(fetchedMovies && fetchedMovies.length > 0){
             const cleanMovies = fetchedMovies.filter(n => !n._deleted );
-            await setState({...state, movies: cleanMovies })
+            let allTags = [];
+            cleanMovies.map(m => {
+                allTags = allTags.concat(m.tags)
+            })
+            await setState({...state, movies: cleanMovies, allTags })
         }
     }
     function handleTitleChange(event) {
@@ -442,42 +470,63 @@ function Bistro () {
             <Container maxWidth="md">
                 <Typography variant={'h2'}>{personLoggedIn}</Typography>
                 <Box my={2}>
-                    <Grid container spacing={2}>
-                        <Grid item xs={4}>
-                            <Button onClick={clickCreateMovie} fullWidth variant="contained" color="primary">
-                                Create Movie
-                            </Button>
-                            {displayVerticalSpace(15)}
-                            <FormGroup row>
-                                {displayFilterCheckbox('watchedByUser')}
-                                {displayFilterCheckbox('toRateByUser')}
-                            </FormGroup>
-
-                            <TextField
-                                fullWidth
-                                id="searchedForMovie"
-                                autoComplete={'off'}
-                                label={'Select movie'}
-                                onChange={(event) => {
-                                    setState({...state, searchedForMovie: event.target.value})
-                                }}
-                                value={ state.searchedForMovie }
-                            />
-                            <List
-                                component="nav"
-                                aria-label="main mailbox folders"
-                                style={{maxHeight: '50vw', overflow: 'auto'}}
-                            >
-                                {state.movies.filter(applyFilters).filter(filterDisplayedMovies).map(generateMovieItem)}
-                            </List>
+                    <AppBar position="static">
+                        <Tabs value={state.selectedTab}
+                              onChange={
+                                  (event, newValue) => setState({...state, selectedTab: newValue})}
+                              aria-label="simple tabs example">
+                            <Tab label="Movies"  />
+                            <Tab label="Links"  />
+                            <Tab label="Suggestions" />
+                        </Tabs>
+                    </AppBar>
+                    <TabPanel value={state.selectedTab} index={0}>
+                        <Grid container spacing={2}>
+                            <Grid item xs={4}>
+                                <Button onClick={clickCreateMovie} fullWidth variant="contained" color="primary">
+                                    Create Movie
+                                </Button>
+                                {displayVerticalSpace(15)}
+                                <FormGroup row>
+                                    {displayFilterCheckbox('watchedByUser')}
+                                    {displayFilterCheckbox('toRateByUser')}
+                                </FormGroup>
+                                <TextField
+                                    fullWidth
+                                    id="searchedForMovie"
+                                    autoComplete={'off'}
+                                    label={'Select movie'}
+                                    onChange={(event) => {
+                                        setState({...state, searchedForMovie: event.target.value})
+                                    }}
+                                    value={ state.searchedForMovie }
+                                />
+                                <List
+                                    component="nav"
+                                    aria-label="main mailbox folders"
+                                    style={{maxHeight: '50vw', overflow: 'auto'}}
+                                >
+                                    {state.movies.filter(applyFilters).filter(filterDisplayedMovies).map(generateMovieItem)}
+                                </List>
+                            </Grid>
+                            <Grid item xs={8}>
+                                {displayMovie(state.selectedMovie)}
+                            </Grid>
                         </Grid>
-                        <Grid item xs={8}>
-                            {displayMovie(state.selectedMovie)}
-                        </Grid>
-                        <Grid item xs={12}>
-                            <SuggestionManager/>
-                        </Grid>
-                    </Grid>
+                    </TabPanel>
+                    <TabPanel value={state.selectedTab} index={1}>
+                        <LinkManager
+                            movieTitles={state.movies.map(m => {
+                                return {title: m.title}
+                            })}
+                            tags={noDuplicate(state.allTags).map(t => {
+                                return {title: t}
+                            })}
+                        />
+                    </TabPanel>
+                    <TabPanel value={state.selectedTab} index={2}>
+                        <SuggestionManager/>
+                    </TabPanel>
                 </Box>
                 <div>
                     <Modal

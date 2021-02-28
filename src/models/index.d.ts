@@ -4,6 +4,16 @@ import { ModelInit, MutableModel, PersistentModelConstructor } from "@aws-amplif
 
 
 
+export declare class Link {
+  readonly id: string;
+  readonly source?: string;
+  readonly target?: string;
+  readonly reason?: string;
+  readonly value?: number;
+  constructor(init: ModelInit<Link>);
+  static copyOf(source: Link, mutator: (draft: MutableModel<Link>) => MutableModel<Link> | void): Link;
+}
+
 export declare class Movie {
   readonly id: string;
   readonly title?: string;

@@ -16,6 +16,7 @@ import {Scores} from "./components/Scores";
 import {Suggestions} from "./components/Suggestions";
 import Bistro from "./components/Bistro";
 import {MovieExplorer} from "./components/MovieExplorer";
+import {Flowchart} from "./components/Flowchart";
 
 const useStyles = makeStyles((theme) =>
     createStyles({
@@ -47,6 +48,7 @@ export default function BasicExample () {
                         <Tab label={'Movies'} component={Link} to={'/movies'}/>
                         <Tab label={'Scoreboard'} component={Link} to={'/scores'}/>
                         <Tab label={'Suggestions'} component={Link} to={'/suggestions'}/>
+                        <Tab label={'Flowchart'} component={Link} to={'/flowchart'}/>
                         <Tab label={'Bistro'} component={Link} to={'/bistro'}/>
                     </Tabs>
                 </Paper>
@@ -63,6 +65,9 @@ export default function BasicExample () {
                     </Route>
                     <Route path="/suggestions">
                         <Suggestions />
+                    </Route>
+                    <Route path="/flowchart">
+                        <Flowchart />
                     </Route>
                     <Route path="/bistro">
                         <Bistro />

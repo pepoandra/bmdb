@@ -7,7 +7,7 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import {API} from "aws-amplify";
 import {listMovies} from "../graphql/queries";
-import {checker, displayVerticalSpace} from "../helpers/helpers";
+import {checker, displayVerticalSpace, noDuplicate} from "../helpers/helpers";
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
 import Typography from "@material-ui/core/Typography";
@@ -150,9 +150,7 @@ export function MovieExplorer () {
     const watchedByOptions = NAMES.map(o => {
         return {title: o}
     })
-    function noDuplicate(arr) {
-        return [...new Set(arr)]
-    }
+
     function deleteChip(type, value){
         if(value) setFilters({...filters, [type]: filters[type].filter(w => w !== value)})
     }
