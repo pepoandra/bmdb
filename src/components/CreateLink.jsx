@@ -50,7 +50,7 @@ export function CreateLink (props) {
             target: state.target,
             source: state.source,
             value: state.value,
-            reason: state.reason,
+            reason: state.inputReason,
         }
 
         try {
@@ -122,8 +122,7 @@ export function CreateLink (props) {
                         onInputChange={(event, newInputValue) => {
                             setState({...state, inputReason: newInputValue })
                         }}
-                        autoComplete
-                        clearOnEscape
+                        freeSolo
                         renderInput={(params) => <TextField {...params} label="Reason" margin="normal" />}
                     />
                 </Grid>

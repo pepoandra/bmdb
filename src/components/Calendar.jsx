@@ -100,17 +100,18 @@ function CalendarComponent () {
                 <Calendar
                     localizer={localizer}
                     events={movies.map((m, id) => {
-                return {
-                    id,
-                    start: setHours(new Date(m.date)),
-                    end: setHours(new Date(m.date)),
-                    ...m,
-                }
+                        return {
+                            id,
+                            start: setHours(new Date(m.date)),
+                            end: setHours(new Date(m.date)),
+                            ...m,
+                        }
                     })}
                     startAccessor="start"
                     endAccessor="end"
                     onSelectEvent={event => handleEventClick(event)}
                     style={{ height: 800 }}
+                    views={['month', 'week']}
                     popup
                 />
             </div>

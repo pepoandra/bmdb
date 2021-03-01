@@ -124,7 +124,6 @@ export function MovieExplorer () {
         if([37, 40].includes(event.keyCode)){
             selectPrevMovie()
         }
-
     }
 
     function generateMovieItem(movie) {

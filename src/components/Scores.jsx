@@ -174,7 +174,7 @@ export function Scores () {
     }, [])
     return (
         <Container maxWidth="lg">
-            <Box my={4}>
+            <Box my={1}>
                 <Grid container>
                     <Grid item xs={6}>
                         <Card className={'rulesCard'}>
@@ -187,9 +187,17 @@ export function Scores () {
                                 subheader={`It's the final corkdown`}
                             />
                             <CardContent>
-                                <div style={{textAlign: 'right'}}>
-                                    <Button onClick={toggleCork}>Select Date</Button>
-                                </div>
+                                <Grid container>
+                                    <Grid item xs={5}>
+                                        <Typography>{dateRangeCork.label}</Typography>
+                                    </Grid>
+                                    <Grid item xs={2}/>
+                                    <Grid item xs={5}>
+                                        <div style={{textAlign: 'right'}}>
+                                            <Button onClick={toggleCork}>Select Date</Button>
+                                        </div>
+                                    </Grid>
+                                </Grid>
                                 <TableContainer component={Paper}>
                                     <Table aria-label="customized table">
                                         <TableHead>
@@ -298,9 +306,17 @@ export function Scores () {
                                 subheader={`Cinephile hall of fame`}
                             />
                             <CardContent>
-                                <div style={{textAlign: 'right'}}>
-                                    <Button onClick={toggleCinephile}>Select Date</Button>
-                                </div>
+                                <Grid container>
+                                    <Grid item xs={5}>
+                                        <Typography>{dateRangeCinephile.label}</Typography>
+                                    </Grid>
+                                    <Grid item xs={2}/>
+                                    <Grid item xs={5}>
+                                        <div style={{textAlign: 'right'}}>
+                                            <Button onClick={toggleCinephile}>Select Date</Button>
+                                        </div>
+                                    </Grid>
+                                </Grid>
                                 <TableContainer component={Paper}>
                                     <Table aria-label="customized table">
                                         <TableHead>

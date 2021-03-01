@@ -124,7 +124,7 @@ export function LinkManager (props) {
             target: state.target,
             source: state.source,
             value: state.value,
-            reason: state.reason,
+            reason: state.inputReason,
         }
 
         try {
@@ -141,7 +141,11 @@ export function LinkManager (props) {
         }, 7000)
 
     }
-
+    function filterDisplayedLinks(link) {
+        let res = link.source.toLowerCase().includes(state.searchedForLink.toLowerCase())
+        res = res || link.target.toLowerCase().includes(state.searchedForLink.toLowerCase())
+        return res || link.reason.toLowerCase().includes(state.searchedForLink.toLowerCase())
+    }
     function displayAlert() {
         if(!(state.savedError || state.savedSuccess)) return
         const severity = state.savedSuccess? 'success' : 'error'
@@ -212,15 +216,15 @@ export function LinkManager (props) {
                             getOptionLabel={(option) => option.title}
                             id="reason"
                             onChange={(event, newValue) => {
-                                // setState({...state, newTag: newValue.title})
-                                setState({...state, reason : newValue.title})
+                                if(newValue && newValue.title){
+                                    setState({...state, reason: newValue.title})
+                                }
                             }}
                             inputValue={state.inputReason}
                             onInputChange={(event, newInputValue) => {
                                 setState({...state, inputReason: newInputValue })
                             }}
-                            autoComplete
-                            clearOnEscape
+                            freeSolo
                             renderInput={(params) => <TextField {...params} label="Reason" margin="normal" />}
                         />
                     </Grid>
@@ -266,7 +270,7 @@ export function LinkManager (props) {
             </CardContent>
         </Card>
     }
-    function generateSuggestionItem(link) {
+    function generateLinkItem(link) {
         return (<ListItem button onClick={() => onClickLink(link.id)}>
             <ListItemText  primary={`${link.source} <-> ${link.target}`}
             />
@@ -295,7 +299,7 @@ export function LinkManager (props) {
                         aria-label="main mailbox folders"
                         style={{maxHeight: '50vw', overflow: 'auto'}}
                     >
-                        {state.links.map(generateSuggestionItem)}
+                        {state.links.filter(filterDisplayedLinks).map(generateLinkItem)}
                     </List>
                 </Grid>
                 <Grid item xs={8}>
