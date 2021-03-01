@@ -8,14 +8,11 @@ import ListItemText from '@material-ui/core/ListItemText';
 import {API} from "aws-amplify";
 import {listMovies} from "../graphql/queries";
 import {checker, displayVerticalSpace, noDuplicate} from "../helpers/helpers";
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Checkbox from '@material-ui/core/Checkbox';
 import Typography from "@material-ui/core/Typography";
 import moment from 'moment'
 import { Auth, graphqlOperation } from 'aws-amplify';
 
 import {ViewMovie} from "./ViewMovie";
-import FormGroup from "@material-ui/core/FormGroup";
 import Chip from "@material-ui/core/Chip";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import {DROPDOWN_OPTIONS, NAMES} from "../helpers/constants";
@@ -65,7 +62,6 @@ export function MovieExplorer () {
                 tags = tags.concat(m.tags)
             })
             await setState({...state, movies: cleanMovies, allTags: noDuplicate(tags), unfilteredMovies: fetchedMovies })
-
             onClickMovie(fetchedMovies[0].title)
         }
     }
@@ -73,16 +69,16 @@ export function MovieExplorer () {
     function applyFilters(m) {
         let res = true
         if(filters.watchedBy.length > 0){
-            res = res & checker(m.watchedBy, filters.watchedBy)
+            res = res && checker(m.watchedBy, filters.watchedBy)
         }
         if(filters.tags.length > 0){
-            res = res & checker(m.tags, filters.tags)
+            res = res && checker(m.tags, filters.tags)
         }
         if(filters.corkedBy.length > 0){
-            res = res & filters.corkedBy.includes(m.corkedBy)
+            res = res && filters.corkedBy.includes(m.corkedBy)
         }
         if(filters.pickedBy.length > 0){
-            res = res & filters.pickedBy.includes(m.pickedBy)
+            res = res && filters.pickedBy.includes(m.pickedBy)
         }
         return res
     }
@@ -159,7 +155,6 @@ export function MovieExplorer () {
     }
 
     return <Container maxWidth="lg">
-        <Typography variant={'h2'}>Movies</Typography>
         <Box my={2} >
             <div onKeyDown={arrowPressAction} tabIndex="0" style={{borderline: 'none', border: 'none', outline: 'none'}}>
                 <Grid container spacing={1}>

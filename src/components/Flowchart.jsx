@@ -80,7 +80,6 @@ export function Flowchart () {
     }
     return <Container maxWidth="lg">
 
-        <Typography variant={'h2'}>Flowchart</Typography>
         <Box my={2} >
             <ForceGraph3D
                 graphData={data}

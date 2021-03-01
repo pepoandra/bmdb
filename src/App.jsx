@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {useState} from 'react'
 import {
   BrowserRouter as Router,
   Switch,
@@ -6,8 +6,6 @@ import {
   Link
 } from 'react-router-dom'
 import { NotFound } from './components/NotFound'
-
-import { createStyles, makeStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
@@ -18,31 +16,21 @@ import Bistro from "./components/Bistro";
 import {MovieExplorer} from "./components/MovieExplorer";
 import {Flowchart} from "./components/Flowchart";
 
-const useStyles = makeStyles((theme) =>
-    createStyles({
-        root: {
-            flexGrow: 1,
-        },
-        menuButton: {
-            marginRight: theme.spacing(2),
-        },
-        title: {
-            flexGrow: 1,
-        },
-    }),
-);
-
 
 export default function BasicExample () {
-  return (
+    const [value, setValue] = useState(0)
+    return (
         <Router>
             <div>
                 <Paper>
                     <Tabs
-                        value={'value'}
+                        value={value}
                         indicatorColor="primary"
                         textColor="primary"
                         centered
+                        onChange={(event, value) => {
+                            setValue(value);
+                        }}
                     >
                         <Tab label={'Calendar'} component={Link} to={'/'}/>
                         <Tab label={'Movies'} component={Link} to={'/movies'}/>

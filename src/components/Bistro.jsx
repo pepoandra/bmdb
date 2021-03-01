@@ -44,7 +44,10 @@ const initialState = {
     rating: 0,
     tags: '',
     newTag: '',
+    inputNewTag: '',
     watchedBy: [],
+    inputPickedBy: '',
+    inputCorkedBy: '',
     thoughts: '',
     savedSuccess: false,
     savedError: false,
@@ -125,7 +128,7 @@ function Bistro () {
             const cleanMovies = fetchedMovies.filter(n => !n._deleted );
             let allTags = [];
             cleanMovies.map(m => {
-                allTags = allTags.concat(m.tags)
+                allTags = noDuplicate(allTags.concat(m.tags))
             })
             await setState({...state, movies: cleanMovies, allTags })
         }
@@ -144,6 +147,8 @@ function Bistro () {
             watchedBy: m.watchedBy,
             pickedBy: m.pickedBy,
             corkedBy: m.corkedBy,
+            inputCorkedBy: m.corkedBy,
+            inputPickedBy: m.pickedBy,
             title: m.title,
             rating: m[`rate${personLoggedIn}`] || 0,
             tags: m.tags,
@@ -161,6 +166,11 @@ function Bistro () {
         setIsCreateModalOpen(true)
     }
 
+    function keyPress(event){
+        if(event.keyCode === 13){
+            handleAddTag()
+        }
+    }
     async function handleDeleteMovie() {
         const actualMovie = state.movies.find(m => m.title === state.selectedMovie)
         const input = {
@@ -241,11 +251,12 @@ function Bistro () {
         setState({...state, tags: state.tags.filter(t => t !== tag)})
     }
     function handleAddTag() {
-        if(state.newTag) setState({...state, newTag: '', tags: state.tags.concat(state.newTag) })
+        if(state.newTag !== '') {
+            return setState({...state, newTag: '', tags: state.tags.concat(state.newTag) })
+        }
+        if(state.inputNewTag !== '') return setState({...state, inputNewTag: '', tags: state.tags.concat(state.inputNewTag) })
     }
-    function handleChangeTag(event) {
-        setState({...state, newTag: event.target.value})
-    }
+
     function handleRatingChange (event) {
         let value = 0;
         if(event.target.value > 0 ){
@@ -340,12 +351,15 @@ function Bistro () {
                             getOptionLabel={(option) => option.title}
                             id="corkedBy"
                             autoComplete
-                            onInputChange={(event, newInputValue) => {
-                                setState({...state, corkedBy: newInputValue})
+                            onChange={(event, newValue) => {
+                                if(newValue && newValue.title){
+                                    setState({...state, corkedBy: newValue.title})
+                                }
                             }}
-                            clearOnEscape
-                            includeInputInList
-                            value={ {title: state.corkedBy} }
+                            inputValue={state.inputCorkedBy}
+                            onInputChange={(event, newInputValue) => {
+                                setState({...state, inputCorkedBy: newInputValue})
+                            }}
                             renderInput={(params) => <TextField {...params} label="Corked by" margin="normal" />}
                         />
                     </Grid>
@@ -357,12 +371,17 @@ function Bistro () {
                             options={options}
                             getOptionLabel={(option) => option.title}
                             id="pickedBy"
-                            onInputChange={(event, newInputValue) => {
-                                setState({...state, pickedBy: newInputValue})
+                            onChange={(event, newValue) => {
+                                if(newValue && newValue.title){
+                                    setState({...state, pickedBy: newValue.title})
+                                }
                             }}
                             autoComplete
                             clearOnEscape
-                            value={ {title: state.pickedBy} }
+                            inputValue={state.inputPickedBy}
+                            onInputChange={(event, newInputValue) => {
+                                setState({...state, inputPickedBy: newInputValue})
+                            }}
                             includeInputInList
                             renderInput={(params) => <TextField {...params} label="Picked by" margin="normal" />}
                         />
@@ -401,18 +420,31 @@ function Bistro () {
                     <Grid item xs={12}>
                         {displayVerticalSpace(10)}
                         <Divider />
-                        {displayVerticalSpace(15)}
                     </Grid>
                     <Grid item xs={5}>
-                        <TextField
-                            id="tag"
-                            label="Tag"
-                            value={state.newTag}
-                            onChange={handleChangeTag}
+                        <Autocomplete
+                            options={state.allTags.map(t => {
+                                return {title: t}
+                            })}
+                            getOptionLabel={(option) => option.title}
+                            id="Tags"
+                            onChange={(event, newValue) => {
+                                if(newValue && newValue.title){
+                                    setState({...state, newTag: newValue.title})
+                                }
+                            }}
+                            inputValue={state.inputNewTag}
+                            onInputChange={(event, newInputValue) => {
+                                setState({...state, inputNewTag: newInputValue})
+                            }}
+                            freeSolo
+                            renderInput={(params) => <TextField {...params} label="Tags" margin="normal" />}
+                            onKeyDown={keyPress}
                         />
-                        {displayVerticalSpace(10)}
                     </Grid>
+                    <Grid item xs={1}/>
                     <Grid item xs={3}>
+                        {displayVerticalSpace(30)}
                         <Button fullWidth onClick={handleAddTag} variant="contained" color="primary">
                             Add Tag
                         </Button>
@@ -443,7 +475,7 @@ function Bistro () {
                             Delete
                         </Button>
                     </Grid>
-                    <Grid item xs={1}></Grid>
+                    <Grid item xs={1}/>
                     <Grid item xs={7}>
                         <Button fullWidth onClick={saveMovie} variant="contained" color="primary">
                             Save
@@ -537,7 +569,7 @@ function Bistro () {
                         onEscapeKeyDown={handleCloseCreateMovie}
                     >
                         <div className={classes.paper}>
-                            <CreateMovie closeModal={handleCloseCreateMovie} personLoggedIn={personLoggedIn}/>
+                            <CreateMovie closeModal={handleCloseCreateMovie} personLoggedIn={personLoggedIn} tags={state.allTags}/>
                         </div>
                     </Modal>
                 </div>

@@ -22,6 +22,7 @@ const initialState = {
     rating: 0,
     tags: [],
     newTag: '',
+    inputNewTag: '',
     watchers: [],
     thoughts: '',
     isCreateModalOpen: false,
@@ -32,8 +33,8 @@ const initialState = {
 
 export function CreateMovie (props) {
     const [state, setState] = useState(initialState)
-    const personLoggedIn = props.personLoggedIn;
 
+    const {tags, personLoggedIn, closeModal} = props
     async function handleChangeWatchers(name){
         if(isNameChecked(name)){
             await setState({...state, watchers: state.watchers.filter(w => w !== name) })
@@ -71,7 +72,7 @@ export function CreateMovie (props) {
         setState({...state, newTag: event.target.value})
     }
     function cancelMovieCreation() {
-        props.closeModal()
+        closeModal()
     }
     async function saveMovie() {
         const newMovie = {
@@ -114,11 +115,14 @@ export function CreateMovie (props) {
         setState({...state, tags: state.tags.filter((t, i) => i !== index)})
     }
     function handleAddTag() {
-        if(state.newTag) setState({...state, newTag: '', tags: state.tags.concat(state.newTag) })
+        if(state.newTag !== '') {
+            return setState({...state, newTag: '', tags: state.tags.concat(state.newTag) })
+        }
+        if(state.inputNewTag !== '') return setState({...state, inputNewTag: '', tags: state.tags.concat(state.inputNewTag) })
     }
     function keyPress(event){
-        if(event.keyCode === 13 && state.newTag){
-            setState({...state, newTag: '', tags: state.tags.concat(state.newTag)})
+        if(event.keyCode === 13){
+            handleAddTag()
         }
     }
     function handleThoughtsChange (event) {
@@ -148,7 +152,7 @@ export function CreateMovie (props) {
                     />
                 </Grid>
                 <Grid item xs={2}>
-                    {displayVerticalSpace(45)}
+                    {displayVerticalSpace(20)}
                 </Grid>
                 <Grid item xs={3}>
                     <TextField
@@ -174,8 +178,7 @@ export function CreateMovie (props) {
                         renderInput={(params) => <TextField {...params} label="Corked by" margin="normal" />}
                     />
                 </Grid>
-                <Grid item xs={2}>
-                </Grid>
+                <Grid item xs={2}/>
                 <Grid item xs={5}>
                     <Autocomplete
                         options={options}
@@ -222,19 +225,32 @@ export function CreateMovie (props) {
                 <Grid item xs={12}>
                     {displayVerticalSpace(10)}
                     <Divider />
-                    {displayVerticalSpace(15)}
                 </Grid>
                 <Grid item xs={5}>
-                    <TextField
-                        id="tag"
-                        label="Tag"
-                        value={state.newTag}
-                        onChange={handleChangeTag}
+                    <Autocomplete
+                        options={tags.map(t => {
+                            return {title: t}
+                        })}
+                        getOptionLabel={(option) => option.title}
+                        id="Tags"
+                        onChange={(event, newValue) => {
+                            if(newValue && newValue.title){
+                                setState({...state, newTag: newValue.title})
+                            }
+                        }}
+                        inputValue={state.inputNewTag}
+                        onInputChange={(event, newInputValue) => {
+                            setState({...state, inputNewTag: newInputValue})
+                        }}
+                        freeSolo
+                        renderInput={(params) => <TextField {...params} label="Tags" margin="normal" />}
                         onKeyDown={keyPress}
                     />
                     {displayVerticalSpace(10)}
                 </Grid>
+                <Grid item xs={1}/>
                 <Grid item xs={3}>
+                    {displayVerticalSpace(25)}
                     <Button fullWidth onClick={handleAddTag} variant="contained" color="primary">
                         Add Tag
                     </Button>
