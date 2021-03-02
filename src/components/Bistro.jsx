@@ -115,7 +115,7 @@ function Bistro () {
 
     useEffect(() => {
         fetchMovies()
-    }, [isCreateModalOpen, state.savedSuccess])
+    }, [isCreateModalOpen])
 
     useEffect(async ()=>{
         const data =  await Auth.currentSession()
