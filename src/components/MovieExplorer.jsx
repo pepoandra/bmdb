@@ -8,7 +8,6 @@ import ListItemText from '@material-ui/core/ListItemText';
 import {API} from "aws-amplify";
 import {listMovies} from "../graphql/queries";
 import {checker, displayVerticalSpace, noDuplicate} from "../helpers/helpers";
-import Typography from "@material-ui/core/Typography";
 import moment from 'moment'
 import { Auth, graphqlOperation } from 'aws-amplify';
 
@@ -154,7 +153,7 @@ export function MovieExplorer () {
     }
 
     return <Container maxWidth="lg">
-        <Box my={2} >
+        <Box my={1} >
             <div onKeyDown={arrowPressAction} tabIndex="0" style={{borderline: 'none', border: 'none', outline: 'none'}}>
                 <Grid container spacing={1}>
                     <Grid item xs={3}>

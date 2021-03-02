@@ -25,13 +25,19 @@ const createLinksFromMovieTags = (movies) => {
             }
         })
     })
+
+    //return tagDict
+
     const links = []
+
+
     Object.keys(tagDict).forEach(t => {
-        for(let i = 0; i < tagDict[t].length - 2; i++){
-            for(let k = i; tagDict[t].length -1; k++){
+        for (let i = 0; i < tagDict[t].length - 1; i++) {
+            // This is where you'll capture that last value
+            for (let j = i + 1; j < tagDict[t].length; j++) {
                 links.push({
                     source: tagDict[t][i],
-                    target: tagDict[t][k],
+                    target: tagDict[t][j],
                     reason: t,
                     value: 9,
                 })
@@ -65,7 +71,7 @@ export function Flowchart () {
 
         const fetchedMovies = apiData.data.listMovies.items;
         if(fetchedMovies && fetchedMovies.length > 0){
-            const cleanMovies = fetchedMovies.filter(n => !n._deleted ).sort((a, b) => new Date(b.date) - new Date(a.date))
+            const cleanMovies = fetchedMovies.filter(n => !n._deleted ).map(m => {return {title: m.title, tags: m.tags}}).sort((a, b) => new Date(b.date) - new Date(a.date))
             await setState({...state, movies: cleanMovies })
         }
     }
@@ -75,11 +81,10 @@ export function Flowchart () {
 
 
     const data = {
-        links ,
+        links: createLinksFromMovieTags(state.movies).concat(links) ,
         nodes
     }
     return <Container maxWidth="lg">
-
         <Box my={2} >
             <ForceGraph3D
                 graphData={data}

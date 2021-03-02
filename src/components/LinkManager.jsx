@@ -75,7 +75,6 @@ export function LinkManager (props) {
         if(fetchedLinks && fetchedLinks.length > 0){
             const cleanLinks = fetchedLinks.filter(n => !n._deleted )
             await setState({...state, links: cleanLinks })
-            onClickLink(fetchedLinks[0].id)
         }
     }
 
@@ -129,7 +128,6 @@ export function LinkManager (props) {
 
         try {
             const algo = await API.graphql(graphqlOperation(updateLink, {input: newLink }))
-            alert(JSON.stringify(algo))
             await fetchLinks();
             setState({...state, savedSuccess: true})
         } catch (err) {
