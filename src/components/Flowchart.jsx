@@ -7,6 +7,7 @@ import { graphqlOperation } from 'aws-amplify';
 import ForceGraph3D from 'react-force-graph-3d';
 import {NAMES} from "../helpers/constants";
 import SpriteText from 'three-spritetext';
+import {BLACKLISTED_TAGS} from "../helpers/constants";
 
 const initialState = {
     movies: [],
@@ -17,6 +18,9 @@ const createLinksFromMovieTags = (movies) => {
 
     movies.forEach(m => {
         m.tags.forEach(t => {
+            if(BLACKLISTED_TAGS.includes(t)){
+                return
+            }
             if(Array.isArray(tagDict[t])) {
                 tagDict[t].push(m.title)
             } else{

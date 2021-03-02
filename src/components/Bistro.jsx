@@ -53,6 +53,7 @@ const initialState = {
     savedError: false,
     date: '',
     errorMsg: '',
+    update: false,
 }
 const filterInitialState = {
     watchedByUser: false,
@@ -115,7 +116,7 @@ function Bistro () {
 
     useEffect(() => {
         fetchMovies()
-    }, [isCreateModalOpen])
+    }, [isCreateModalOpen, state.update])
 
     useEffect(async ()=>{
         const data =  await Auth.currentSession()
@@ -179,8 +180,7 @@ function Bistro () {
         }
         try {
             const algo = await API.graphql(graphqlOperation(deleteMovie, {input: input }))
-            setState({...state, savedSuccess: true})
-            await fetchMovies();
+            setState({...state, savedSuccess: true, update: !state.update})
         } catch (err) {
             alert(JSON.stringify(err.errors[0]))
             setState({...state, savedError: true, errorMsg: err.message})
@@ -206,9 +206,8 @@ function Bistro () {
         if (validateMovie(newMovie)) {
             try {
                 const algo = await API.graphql(graphqlOperation(updateMovie, {input: newMovie }))
-                // setState({...state, movies: state.movies.concat([algo.data.updateMovie])})
                 await fetchMovies();
-                setState({...state, savedSuccess: true})
+                setState({...state, savedSuccess: true, update: !state.update})
             } catch (err) {
                 setState({...state, savedError: true})
             }
