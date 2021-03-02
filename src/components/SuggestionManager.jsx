@@ -11,7 +11,7 @@ import {API, graphqlOperation} from "aws-amplify";
 import { listSuggestions} from "../graphql/queries";
 import {displayVerticalSpace} from "../helpers/helpers";
 import {Alert} from "@material-ui/lab";
-import {updateMovie, deleteMovie, deleteSuggestion, updateSuggestion} from "../graphql/mutations";
+import {deleteSuggestion, updateSuggestion} from "../graphql/mutations";
 import Typography from "@material-ui/core/Typography";
 
 const initialState = {

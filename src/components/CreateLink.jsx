@@ -10,7 +10,6 @@ import {createLink, updateLink} from "../graphql/mutations";
 import {Alert} from "@material-ui/lab";
 
 
-
 const initialState = {
     reason: '',
     inputReason: '',

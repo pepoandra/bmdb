@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react'
 import Box from '@material-ui/core/Box';
-import { Container, TextField} from "@material-ui/core";
+import { Container} from "@material-ui/core";
 import {API} from "aws-amplify";
 import {listLinks, listMovies} from "../graphql/queries";
-import Typography from "@material-ui/core/Typography";
 import { graphqlOperation } from 'aws-amplify';
 import ForceGraph3D from 'react-force-graph-3d';
 import {NAMES} from "../helpers/constants";
@@ -26,14 +25,11 @@ const createLinksFromMovieTags = (movies) => {
         })
     })
 
-    //return tagDict
-
     const links = []
 
 
     Object.keys(tagDict).forEach(t => {
         for (let i = 0; i < tagDict[t].length - 1; i++) {
-            // This is where you'll capture that last value
             for (let j = i + 1; j < tagDict[t].length; j++) {
                 links.push({
                     source: tagDict[t][i],
