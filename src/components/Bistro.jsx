@@ -206,7 +206,6 @@ function Bistro () {
         if (validateMovie(newMovie)) {
             try {
                 const algo = await API.graphql(graphqlOperation(updateMovie, {input: newMovie }))
-                await fetchMovies();
                 setState({...state, savedSuccess: true, update: !state.update})
             } catch (err) {
                 setState({...state, savedError: true})

@@ -46,7 +46,6 @@ export const DateRangeLabels = [
     },
 ]
 
-
 export const GENRES = [
     "Action",
     "Adventure",
