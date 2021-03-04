@@ -49,11 +49,13 @@ const initialState = {
     inputPickedBy: '',
     inputCorkedBy: '',
     thoughts: '',
+    date: '',
+}
+
+const msgInitialState = {
     savedSuccess: false,
     savedError: false,
-    date: '',
     errorMsg: '',
-    update: false,
 }
 const filterInitialState = {
     watchedByUser: false,
@@ -113,10 +115,11 @@ function Bistro () {
     const [isCreateModalOpen, setIsCreateModalOpen] = useState(false)
     const classes = useStyles();
     const [filters, setFilters] = useState(filterInitialState)
-
+    const [update, setUpdate] = useState(false)
+    const [msgs, setMsgs] = useState(msgInitialState)
     useEffect(() => {
         fetchMovies()
-    }, [isCreateModalOpen, state.update])
+    }, [])
 
     useEffect(async ()=>{
         const data =  await Auth.currentSession()
@@ -180,13 +183,14 @@ function Bistro () {
         }
         try {
             const algo = await API.graphql(graphqlOperation(deleteMovie, {input: input }))
-            setState({...state, savedSuccess: true, update: !state.update})
+            setMsgs({...msgs, savedSuccess: true})
+            setUpdate(!update)
         } catch (err) {
             alert(JSON.stringify(err.errors[0]))
-            setState({...state, savedError: true, errorMsg: err.message})
+            setMsgs({...msgs, savedError: true, errorMsg: err.message})
         }
         setTimeout(() => {
-            setState({...state, savedSuccess: false, savedError: false})
+            setMsgs({...msgs, savedSuccess: false, savedError: false})
         }, 7000)
     }
     async function saveMovie() {
@@ -206,12 +210,13 @@ function Bistro () {
         if (validateMovie(newMovie)) {
             try {
                 const algo = await API.graphql(graphqlOperation(updateMovie, {input: newMovie }))
-                setState({...state, savedSuccess: true, update: !state.update})
+                setMsgs({...msgs, savedSuccess: true})
+                setUpdate(!update)
             } catch (err) {
-                setState({...state, savedError: true})
+                setMsgs({...msgs, savedError: true, errorMsg: err.message})
             }
             setTimeout(() => {
-                setState({...state, savedSuccess: false, savedError: false})
+                setMsgs({...msgs, savedSuccess: false, savedError: false})
             }, 7000)
         }
     }
@@ -295,9 +300,9 @@ function Bistro () {
         setState({...state, date: event.target.value})
     }
     function displayAlert() {
-        if(!(state.savedError || state.savedSuccess)) return
-        const severity = state.savedSuccess? 'success' : 'error'
-        const msg = state.savedSuccess? 'Movie saved!' : state.errorMsg
+        if(!(msgs.savedError || msgs.savedSuccess)) return
+        const severity = msgs.savedSuccess? 'success' : 'error'
+        const msg = msgs.savedSuccess? 'Movie saved!' : msgs.errorMsg
         return <Paper >
             <Alert variant="filled" severity={severity}>
                 {msg}
@@ -480,7 +485,7 @@ function Bistro () {
                         </Button>
                     </Grid>
                     <Grid item xs={12}>
-                        <Grow in={state.savedError || state.savedSuccess}>
+                        <Grow in={msgs.savedError || msgs.savedSuccess}>
                             <div>
                                 {displayAlert()}
                             </div>
