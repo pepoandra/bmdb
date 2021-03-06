@@ -5,6 +5,8 @@ import reportWebVitals from './reportWebVitals'
 import Amplify from 'aws-amplify'
 import config from './aws-exports'
 import BasicExample from './App'
+import CssBaseline from '@material-ui/core/CssBaseline';
+
 Amplify.configure({
   ...config,
   Analytics: {
@@ -14,6 +16,7 @@ Amplify.configure({
 
 ReactDOM.render(
   <React.StrictMode>
+    <CssBaseline/>
     <BasicExample />
   </React.StrictMode>,
   document.getElementById('root')

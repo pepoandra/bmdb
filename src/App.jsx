@@ -15,54 +15,73 @@ import {Suggestions} from "./components/Suggestions";
 import Bistro from "./components/Bistro";
 import {MovieExplorer} from "./components/MovieExplorer";
 import {Flowchart} from "./components/Flowchart";
-
+import {AmplifyAuthenticator, AmplifySignOut, AmplifySignIn} from '@aws-amplify/ui-react'
 
 export default function BasicExample () {
     const [value, setValue] = useState(0)
     return (
         <Router>
-            <div>
-                <Paper>
-                    <Tabs
-                        value={value}
-                        indicatorColor="primary"
-                        textColor="primary"
-                        centered
-                        onChange={(event, value) => {
-                            setValue(value);
-                        }}
-                    >
-                        <Tab label={'Calendar'} component={Link} to={'/'}/>
-                        <Tab label={'Movies'} component={Link} to={'/movies'}/>
-                        <Tab label={'Scoreboard'} component={Link} to={'/scores'}/>
-                        <Tab label={'Suggestions'} component={Link} to={'/suggestions'}/>
-                        <Tab label={'Flowchart'} component={Link} to={'/flowchart'}/>
-                        <Tab label={'Bistro'} component={Link} to={'/bistro'}/>
-                    </Tabs>
-                </Paper>
-                <hr />
-                <Switch>
-                    <Route exact path="/">
-                        <CalendarComponent />
-                    </Route>
-                    <Route path="/movies">
-                        <MovieExplorer  />
-                    </Route>
-                    <Route path="/scores">
-                        <Scores />
-                    </Route>
-                    <Route path="/suggestions">
-                        <Suggestions />
-                    </Route>
-                    <Route path="/flowchart">
-                        <Flowchart />
-                    </Route>
-                    <Route path="/bistro">
-                        <Bistro />
-                    </Route>
-                    <Route component={NotFound} />
-                </Switch>
-            </div>
+            <Paper>
+                <Tabs
+                    value={value}
+                    indicatorColor="primary"
+                    textColor="primary"
+                    centered
+                    onChange={(event, value) => {
+                        setValue(value);
+                    }}
+                >
+                    <Tab label={'Calendar'} component={Link} to={'/'}/>
+                    <Tab label={'Movies'} component={Link} to={'/movies'}/>
+                    <Tab label={'Scoreboard'} component={Link} to={'/scores'}/>
+                    <Tab label={'Suggestions'} component={Link} to={'/suggestions'}/>
+                    <Tab label={'Flowchart'} component={Link} to={'/flowchart'}/>
+                    <Tab label={'Bistro'} component={Link} to={'/bistro'}/>
+                </Tabs>
+            </Paper>
+            <Switch>
+                <Route exact path="/">
+                    <CalendarComponent />
+                </Route>
+                <Route path="/movies">
+                    <MovieExplorer  />
+                </Route>
+                <Route path="/scores">
+                    <Scores />
+                </Route>
+                <Route path="/suggestions">
+                    <Suggestions />
+                </Route>
+                <Route path="/flowchart">
+                    <Flowchart />
+                </Route>
+                <Route path="/bistro">
+                    <AmplifyAuthenticator>
+                        <AmplifySignIn
+                            slot="sign-in" hideSignUp
+                            headerText="Welcome to the Bistro HQ"
+                            formFields={[
+                                {
+                                    type: "email",
+                                    label: "Name",
+                                    placeholder: "You know who you'd be",
+                                    required: true,
+                                },
+                                {
+                                    type: "password",
+                                    label: "Password",
+                                    placeholder: "Don't link it, don't say it",
+                                    required: true,
+                                },
+                            ]}
+                        />
+                        <Bistro/>
+                        <AmplifySignOut />
+                    </AmplifyAuthenticator>
+
+                </Route>
+                <Route component={NotFound} />
+            </Switch>
         </Router>
   )
 }

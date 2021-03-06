@@ -25,7 +25,6 @@ import Grow from '@material-ui/core/Grow';
 import {Alert} from "@material-ui/lab";
 import moment from 'moment'
 import {updateMovie, deleteMovie} from "../graphql/mutations";
-import { withAuthenticator, AmplifySignOut } from '@aws-amplify/ui-react';
 import { Auth } from 'aws-amplify';
 import {NotFound} from "./NotFound";
 import {SuggestionManager} from "./SuggestionManager";
@@ -576,9 +575,8 @@ function Bistro () {
                         </div>
                     </Modal>
                 </div>
-                <AmplifySignOut/>
             </Container>
         )
 }
 
-export default withAuthenticator(Bistro);
+export default Bistro

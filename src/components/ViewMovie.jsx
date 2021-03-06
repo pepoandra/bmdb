@@ -46,10 +46,14 @@ export function ViewMovie (props) {
     // so this function deals with the special cases
     function handleExceptions(movieTitle) {
         switch (movieTitle){
-            case 'Welcome to the South':
-                return 1;
             case '1991':
                 return 10;
+            case 'The Firm':
+                return 2;
+            case 'Joe':
+                return 13;
+            case 'Stand By Me':
+                return 1;
             default:
                 return 0;
         }
