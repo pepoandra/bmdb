@@ -1,6 +1,5 @@
-import React, { useState, useEffect } from 'react'
-import Box from '@material-ui/core/Box';
-import { Container} from "@material-ui/core";
+import React, {useState, useEffect} from 'react'
+import {Container} from "@material-ui/core";
 import {API} from "aws-amplify";
 import {listLinks, listMovies} from "../graphql/queries";
 import { graphqlOperation } from 'aws-amplify';
@@ -8,13 +7,13 @@ import ForceGraph3D from 'react-force-graph-3d';
 import {NAMES} from "../helpers/constants";
 import SpriteText from 'three-spritetext';
 import {BLACKLISTED_TAGS} from "../helpers/constants";
+import Grid from "@material-ui/core/Grid";
+import {displayVerticalSpace} from "../helpers/helpers";
 
-const initialState = {
-    movies: [],
-}
 
 const createLinksFromMovieTags = (movies) => {
     const tagDict = {}
+    const links = []
 
     movies.forEach(m => {
         m.tags.forEach(t => {
@@ -28,9 +27,6 @@ const createLinksFromMovieTags = (movies) => {
             }
         })
     })
-
-    const links = []
-
 
     Object.keys(tagDict).forEach(t => {
         for (let i = 0; i < tagDict[t].length - 1; i++) {
@@ -48,10 +44,10 @@ const createLinksFromMovieTags = (movies) => {
     return links
 }
 
-
 export function Flowchart () {
-    const [state, setState] = useState(initialState)
+    const [movies, setMovies] = useState([])
     const [links, setLinks] = useState([])
+
     useEffect(async () => {
         await fetchMovies()
         fetchLinks()
@@ -68,39 +64,60 @@ export function Flowchart () {
     }
     async function fetchMovies () {
         const apiData = await API.graphql(graphqlOperation(listMovies, {limit: 1000}))
-
         const fetchedMovies = apiData.data.listMovies.items;
         if(fetchedMovies && fetchedMovies.length > 0){
-            const cleanMovies = fetchedMovies.filter(n => !n._deleted ).map(m => {return {title: m.title, tags: m.tags}}).sort((a, b) => new Date(b.date) - new Date(a.date))
-            await setState({...state, movies: cleanMovies })
+            const cleanMovies = fetchedMovies.filter(n => !n._deleted ).sort((a, b) => new Date(b.date) - new Date(a.date))
+            await setMovies(cleanMovies)
         }
     }
-    const nodes = state.movies.map(m => {
+    const nodes = movies.map(m => {
         return {id: m.title, group: NAMES.findIndex(n => n === m.pickedBy)}
     })
 
 
     const data = {
-        links: createLinksFromMovieTags(state.movies).concat(links) ,
+        links: createLinksFromMovieTags(movies).concat(links),
         nodes
     }
-    return <Container maxWidth="lg">
-        <Box my={2} >
-            <ForceGraph3D
-                graphData={data}
-                nodeAutoColorBy="group"
-                height={800}
-                linkVisibility={true}
-                linkOpacity={0.7}
-                backgroundColor={'white'}
-                linkWidth={1}
-                nodeThreeObject={node => {
-                    const sprite = new SpriteText(node.id);
-                    sprite.color = node.color;
-                    sprite.textHeight = 8;
-                    return sprite;
-                }}
-            />
-        </Box>
+
+
+    return <Container maxWidth="xl">
+        <Grid container align="center">
+            {displayVerticalSpace(10)}
+            <Grid item xs={12}>
+                <ForceGraph3D
+                    width={1200}
+                    graphData={data}
+                    nodeAutoColorBy="group"
+                    linkVisibility={true}
+                    linkOpacity={0.7}
+                    backgroundColor={'white'}
+                    linkWidth={1}
+                    nodeLabel="id"
+                    linkThreeObjectExtend={true}
+                    linkThreeObject={link => {
+                        // extend link with text sprite
+                        const sprite = new SpriteText(`${link.reason}`);
+                        sprite.color = 'darkgrey';
+                        sprite.textHeight = 4;
+                        return sprite;
+                    }}
+                    linkPositionUpdate={(sprite, { start, end }) => {
+                        const middlePos = Object.assign(...['x', 'y', 'z'].map(c => ({
+                            [c]: start[c] + (end[c] - start[c]) / 2 // calc middle point
+                        })));
+
+                        // Position sprite
+                        Object.assign(sprite.position, middlePos);
+                    }}
+                    nodeThreeObject={node => {
+                        const sprite = new SpriteText(node.id);
+                        sprite.color = node.color;
+                        sprite.textHeight = 8;
+                        return sprite;
+                    }}
+                />
+            </Grid>
+        </Grid>
     </Container>
 }
