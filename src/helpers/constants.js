@@ -101,6 +101,7 @@ export const COUNTRIES = [
     "Botswana",
     "Bouvet Island",
     "Brazil",
+    "Britain",
     "British Indian Ocean Territory (the)",
     "Brunei Darussalam",
     "Bulgaria",
@@ -324,4 +325,6 @@ export const COUNTRIES = [
     "Åland Islands"
 ]
 
-export const BLACKLISTED_TAGS = GENRES.concat(COUNTRIES)
+export const DECADES = ["1950's","1960's", "1970's", "1980's", "1990's"]
+
+export const BLACKLISTED_TAGS = GENRES.concat(COUNTRIES).concat(DECADES)

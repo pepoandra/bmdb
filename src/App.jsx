@@ -16,9 +16,13 @@ import Bistro from "./components/Bistro";
 import {MovieExplorer} from "./components/MovieExplorer";
 import {Flowchart} from "./components/Flowchart";
 import {AmplifyAuthenticator, AmplifySignOut, AmplifySignIn} from '@aws-amplify/ui-react'
+const paths = ['/', '/movies', '/scores', '/suggestions', '/flowchart', '/bistro']
+const getValueFromURL = () => {
+    return paths.indexOf(window.location.pathname)
+}
 
 export default function BasicExample () {
-    const [value, setValue] = useState(0)
+    const [value, setValue] = useState(getValueFromURL())
     return (
         <Router>
             <Paper>
@@ -33,7 +37,7 @@ export default function BasicExample () {
                 >
                     <Tab label={'Calendar'} component={Link} to={'/'}/>
                     <Tab label={'Movies'} component={Link} to={'/movies'}/>
-                    <Tab label={'Scoreboard'} component={Link} to={'/scores'}/>
+                    <Tab label={'Scores'} component={Link} to={'/scores'}/>
                     <Tab label={'Suggestions'} component={Link} to={'/suggestions'}/>
                     <Tab label={'Flowchart'} component={Link} to={'/flowchart'}/>
                     <Tab label={'Bistro'} component={Link} to={'/bistro'}/>
@@ -78,7 +82,6 @@ export default function BasicExample () {
                         <Bistro/>
                         <AmplifySignOut />
                     </AmplifyAuthenticator>
-
                 </Route>
                 <Route component={NotFound} />
             </Switch>
