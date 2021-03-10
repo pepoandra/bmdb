@@ -41,37 +41,39 @@ export function ViewMovie (props) {
     const [country, setCountry] = useState('')
     const [tmdbRating, setTmdbRating] = useState('')
 
-    // Turns out that just searching for the movie title we save
-    // will not always return the right movie in the first position,
-    // so this function deals with the special cases
-    function handleExceptions(movieTitle) {
-        switch (movieTitle){
-            case '1991':
-                return 10;
-            case 'The Firm':
-                return 2;
-            case 'Joe':
-                return 13;
-            case 'Stand By Me':
-                return 1;
-            default:
-                return 0;
-        }
-    }
     useEffect(() => {
         getMovieInfo(movie.title);
     }, [movie.title])
 
+    function getQuery(title){
+        const q = {
+            language: 'en',
+            query: title,
+        }
+        switch (title){
+            case 'Joe':
+                return {...q, year: 1970 }
+            case '1987':
+                return {...q, year: 2014 }
+            case '1991':
+                return {...q, year: 2018 }
+            case 'The Firm':
+                return {...q, year: 1989 }
+            case 'Stand By Me':
+                return {...q, year: 1986 }
+            default:
+                return q
+        }
+    }
     function getMovieInfo (title) {
-        moviedb.searchMovie({ query: title, language: 'en' })
+        moviedb.searchMovie(getQuery(title))
             .then(res => {
-                const idx = handleExceptions(title)
                 setState({
                     ...state,
-                    overview: res.results[idx].overview,
-                    movieImages: [res.results[idx].poster_path, res.results[idx].backdrop_path],
+                    overview: res.results[0].overview,
+                    movieImages: [res.results[0].poster_path, res.results[0].backdrop_path],
                 })
-                moviedb.movieInfo(res.results[idx].id).then(resp => {
+                moviedb.movieInfo(res.results[0].id).then(resp => {
                     setTmdbRating(resp.vote_average.toString())
                     if(resp.production_countries && resp.production_countries.length > 0) {
                         setCountry(
