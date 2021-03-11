@@ -61,6 +61,8 @@ export function ViewMovie (props) {
                 return {...q, year: 1989 }
             case 'Stand By Me':
                 return {...q, year: 1986 }
+            case 'Network':
+                return {...q, year: 1976 }
             default:
                 return q
         }
