@@ -14,6 +14,7 @@ Amplify.configure({
     disabled: true
   }
 })
+Auth.configure(config)
 
 ReactDOM.render(
   <React.StrictMode>
