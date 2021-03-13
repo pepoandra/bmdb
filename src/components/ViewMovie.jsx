@@ -69,6 +69,10 @@ export function ViewMovie (props) {
                 return {...q, year: 1977}
             case 'Suspiria (2018)':
                 return {...q, year: 2018}
+            case 'Royal Wedding':
+                return {...q, year: 1951}
+            case 'Ravenous':
+                return {...q, year: 1999}
             default:
                 return q
         }
