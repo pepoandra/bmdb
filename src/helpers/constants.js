@@ -316,6 +316,7 @@ export const COUNTRIES = [
     "Venezuela (Bolivarian Republic of)",
     "Viet Nam",
     "Virgin Islands (British)",
+    "British",
     "Virgin Islands (U.S.)",
     "Wallis and Futuna",
     "Western Sahara",
@@ -325,6 +326,6 @@ export const COUNTRIES = [
     "Åland Islands"
 ]
 
-export const DECADES = ["1950's","1960's", "1970's", "1980's", "1990's"]
+export const DECADES = ["1930's", "1940's","1950's","1960's", "1970's", "1980's", "1990's", "2000's"]
 
 export const BLACKLISTED_TAGS = GENRES.concat(COUNTRIES).concat(DECADES)
