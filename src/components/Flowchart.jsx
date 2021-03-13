@@ -13,7 +13,8 @@ import {displayVerticalSpace} from "../helpers/helpers";
 
 const createLinksFromMovieTags = (movies) => {
     const tagDict = {}
-    const links = []
+    const graphLinks = []
+    const nodesWithLinks = new Set()
 
     movies.forEach(m => {
         m.tags.forEach(t => {
@@ -31,23 +32,25 @@ const createLinksFromMovieTags = (movies) => {
     Object.keys(tagDict).forEach(t => {
         for (let i = 0; i < tagDict[t].length - 1; i++) {
             for (let j = i + 1; j < tagDict[t].length; j++) {
-                links.push({
+                nodesWithLinks.add(tagDict[t][i])
+                nodesWithLinks.add(tagDict[t][j])
+                graphLinks.push({
                     source: tagDict[t][i],
                     target: tagDict[t][j],
+                    curvature: 0.5 * Math.random(),
                     reason: t,
                     value: 9,
                 })
             }
         }
     })
-
-    return links
+    return {graphLinks, nodesWithLinks}
 }
 
 export function Flowchart () {
     const [movies, setMovies] = useState([])
     const [links, setLinks] = useState([])
-
+    const [usedNodes, setUsedNodes] = useState(new Set())
     useEffect(async () => {
         await fetchMovies()
         fetchLinks()
@@ -70,13 +73,14 @@ export function Flowchart () {
             await setMovies(cleanMovies)
         }
     }
-    const nodes = movies.map(m => {
-        return {id: m.title, group: NAMES.findIndex(n => n === m.pickedBy)}
-    })
 
-
+    const { graphLinks, nodesWithLinks } = createLinksFromMovieTags(movies)
+    const nodes = movies
+        .map(m => {
+            return {id: m.title, group: NAMES.findIndex(n => n === m.pickedBy)}
+        })
     const data = {
-        links: createLinksFromMovieTags(movies).concat(links),
+        links: graphLinks.concat(links),
         nodes
     }
 
@@ -94,6 +98,7 @@ export function Flowchart () {
                     backgroundColor={'white'}
                     linkWidth={1}
                     nodeLabel="id"
+                    linkCurvature="curvature"
                     linkThreeObjectExtend={true}
                     linkThreeObject={link => {
                         // extend link with text sprite
