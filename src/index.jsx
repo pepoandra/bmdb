@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom'
 import './index.css'
 import reportWebVitals from './reportWebVitals'
 import Amplify from 'aws-amplify'
+import {Auth} from 'aws-amplify';
 import config from './aws-exports'
 import BasicExample from './App'
 import CssBaseline from '@material-ui/core/CssBaseline';
