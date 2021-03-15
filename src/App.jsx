@@ -42,7 +42,6 @@ export default function BasicExample () {
                     <Tab label={'Suggestions'} component={Link} to={'/suggestions'}/>
                     <Tab label={'Flowchart'} component={Link} to={'/flowchart'}/>
                     <Tab label={'Bistro'} component={Link} to={'/bistro'}/>
-                    <Tab label={'BMDB'} component={Link} to={'/bmdb'}/>
 
                 </Tabs>
             </Paper>
@@ -62,9 +61,7 @@ export default function BasicExample () {
                 <Route path="/flowchart">
                     <Flowchart />
                 </Route>
-                <Route path="/bmdb">
-                    <Logo />
-                </Route>
+
                 <Route path="/bistro">
                     <AmplifyAuthenticator>
                         <AmplifySignIn
