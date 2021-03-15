@@ -16,7 +16,8 @@ import Bistro from "./components/Bistro";
 import {MovieExplorer} from "./components/MovieExplorer";
 import {Flowchart} from "./components/Flowchart";
 import {AmplifyAuthenticator, AmplifySignOut, AmplifySignIn} from '@aws-amplify/ui-react'
-const paths = ['/', '/movies', '/scores', '/suggestions', '/flowchart', '/bistro']
+import {Logo} from "./components/Logo";
+const paths = ['/', '/movies', '/scores', '/suggestions', '/flowchart', '/bistro', '/bmdb']
 const getValueFromURL = () => {
     return paths.indexOf(window.location.pathname)
 }
@@ -41,6 +42,8 @@ export default function BasicExample () {
                     <Tab label={'Suggestions'} component={Link} to={'/suggestions'}/>
                     <Tab label={'Flowchart'} component={Link} to={'/flowchart'}/>
                     <Tab label={'Bistro'} component={Link} to={'/bistro'}/>
+                    <Tab label={'BMDB'} component={Link} to={'/bmdb'}/>
+
                 </Tabs>
             </Paper>
             <Switch>
@@ -59,6 +62,9 @@ export default function BasicExample () {
                 <Route path="/flowchart">
                     <Flowchart />
                 </Route>
+                <Route path="/bmdb">
+                    <Logo />
+                </Route>
                 <Route path="/bistro">
                     <AmplifyAuthenticator>
                         <AmplifySignIn
@@ -74,7 +80,7 @@ export default function BasicExample () {
                                 {
                                     type: "password",
                                     label: "Password",
-                                    placeholder: "Don't link it, don't say it",
+                                    placeholder: "Don't think it, don't say it",
                                     required: true,
                                 },
                             ]}
