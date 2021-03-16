@@ -154,7 +154,6 @@ centerTextField {
 .bistroMovieCard {
   display: block;
   transitionDuration: 0.3s;
-  height: 700px;
 }
 
 .createMovieCard {
