@@ -73,6 +73,8 @@ export function ViewMovie (props) {
                 return {...q, year: 1951}
             case 'Ravenous':
                 return {...q, year: 1999}
+            case 'House on Haunted Hill':
+                return {...q, year: 1959}
             default:
                 return q
         }
