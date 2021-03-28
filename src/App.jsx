@@ -16,7 +16,8 @@ import Bistro from "./components/Bistro";
 import {MovieExplorer} from "./components/MovieExplorer";
 import {Flowchart} from "./components/Flowchart";
 import {AmplifyAuthenticator, AmplifySignOut, AmplifySignIn} from '@aws-amplify/ui-react'
-import {Logo} from "./components/Logo";
+import queryString from 'query-string';
+
 const paths = ['/', '/movies', '/scores', '/suggestions', '/flowchart', '/bistro', '/bmdb']
 const getValueFromURL = () => {
     return paths.indexOf(window.location.pathname)
@@ -24,6 +25,8 @@ const getValueFromURL = () => {
 
 export default function BasicExample () {
     const [value, setValue] = useState(getValueFromURL())
+    const { m } = queryString.parse(location.search);
+
     return (
         <Router>
             <Paper>
@@ -50,7 +53,7 @@ export default function BasicExample () {
                     <CalendarComponent />
                 </Route>
                 <Route path="/movies">
-                    <MovieExplorer  />
+                    <MovieExplorer selectedMovie={m}  />
                 </Route>
                 <Route path="/scores">
                     <Scores />

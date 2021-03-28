@@ -10,7 +10,6 @@ import {listMovies} from "../graphql/queries";
 import {checker, displayVerticalSpace, noDuplicate} from "../helpers/helpers";
 import moment from 'moment'
 import { Auth, graphqlOperation } from 'aws-amplify';
-
 import {ViewMovie} from "./ViewMovie";
 import Chip from "@material-ui/core/Chip";
 import Autocomplete from "@material-ui/lab/Autocomplete";
@@ -20,7 +19,7 @@ const initialState = {
     unfilteredMovies: [],
     movies: [],
     searchedForMovie: '',
-    selectedMovie: '',
+    selectedMovie:  '',
     allTags: [],
     inputTag: '',
     inputWatchedBy: '',
@@ -36,9 +35,11 @@ const filterInitialState = {
     endDate: '',
 }
 
-export function MovieExplorer () {
+export function MovieExplorer (props) {
     const [personLoggedIn, setPersonLoggedIn] = useState('')
     const [filters, setFilters] = useState(filterInitialState)
+
+    const { selectedMovie } = props;
     const [state, setState] = useState(initialState)
 
     useEffect(() => {
@@ -60,9 +61,17 @@ export function MovieExplorer () {
             cleanMovies.map(m => {
                 tags = tags.concat(m.tags)
             })
-            await setState({...state, movies: cleanMovies, allTags: noDuplicate(tags), unfilteredMovies: fetchedMovies })
-            onClickMovie(fetchedMovies[0].title)
+            const title = selectStartingMovie(selectedMovie, fetchedMovies)
+            await setState({...state, movies: cleanMovies, allTags: noDuplicate(tags), unfilteredMovies: fetchedMovies, selectedMovie: title })
+            onClickMovie(title)
         }
+    }
+
+    const selectStartingMovie = (selectedMovie, movies) => {
+        if(!selectedMovie) return movies[0].title;
+        const result = movies.findIndex(item => selectedMovie.toLowerCase() === item.title.toLowerCase());
+        if(result === -1 ) return movies[0].title;
+        return movies[result].title
     }
 
     function applyFilters(m) {

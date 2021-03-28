@@ -5,7 +5,6 @@ import Chip from "@material-ui/core/Chip";
 import cork from "../imgs/cork.png";
 import bmdb from "../imgs/bmdb.png";
 import tmdb from "../imgs/tmdb.png";
-
 import {displayVerticalSpace} from "../helpers/helpers";
 import Typography from "@material-ui/core/Typography";
 import movieImg from "../imgs/movie.jpg";
@@ -29,6 +28,8 @@ import Button from "@material-ui/core/Button";
 import KeyboardArrowLeftIcon from '@material-ui/icons/KeyboardArrowLeft';
 import KeyboardArrowRightIcon from '@material-ui/icons/KeyboardArrowRight';
 import CloseIcon from '@material-ui/icons/Close';
+import ShareIcon from '@material-ui/icons/Share';
+import queryString from 'query-string';
 
 const initialState = {
     overview: '',
@@ -127,6 +128,48 @@ export function ViewMovie (props) {
         return avg > 6? 'green' : color
     }
 
+    function copyTextToClipboard() {
+        const text = `http://www.bmdb.site/movies?${queryString.stringify({m : movie.title})}`
+        var textArea = document.createElement("textarea");
+
+        // Place in the top-left corner of screen regardless of scroll position.
+        textArea.style.position = 'fixed';
+        textArea.style.top = 0;
+        textArea.style.left = 0;
+
+        // Ensure it has a small width and height. Setting to 1px / 1em
+        // doesn't work as this gives a negative w/h on some browsers.
+        textArea.style.width = '2em';
+        textArea.style.height = '2em';
+
+        // We don't need padding, reducing the size if it does flash render.
+        textArea.style.padding = 0;
+
+        // Clean up any borders.
+        textArea.style.border = 'none';
+        textArea.style.outline = 'none';
+        textArea.style.boxShadow = 'none';
+
+        // Avoid flash of the white box if rendered for any reason.
+        textArea.style.background = 'transparent';
+
+        textArea.value = text;
+
+        document.body.appendChild(textArea);
+        textArea.focus();
+        textArea.select();
+
+        try {
+            var successful = document.execCommand('copy');
+            var msg = successful ? 'successful' : 'unsuccessful';
+            console.log('Copying text command was ' + msg);
+        } catch (err) {
+            console.log('Oops, unable to copy');
+        }
+
+        document.body.removeChild(textArea);
+        alert('Copied to clipboard!')
+    }
     const bistroAverage = getBistroAverage(movie)
     const ratingAvatarStyles = {
         height: '45px',
@@ -156,7 +199,7 @@ export function ViewMovie (props) {
                     <Grid item xs={1} style={{marginRight: '10px'}}>
                         <img src={cork} alt="Logo" className={'minicork'}/>
                     </Grid>
-                    <Grid item xs={4}>
+                    <Grid item xs={3}>
                         {displayVerticalSpace(10)}
                         <Typography> {movie.corkedBy} </Typography>
                     </Grid>
@@ -167,6 +210,15 @@ export function ViewMovie (props) {
                         {displayVerticalSpace(10)}
                         <div style={{alignText: 'left'}}>
                             <Typography >{movie.pickedBy} </Typography>
+                        </div>
+                    </Grid>
+                    <Grid item  xs={8}>
+                        {displayVerticalSpace(10)}
+                        <div  style={{textAlign: 'center'}}>
+                            <Button onClick={copyTextToClipboard}>
+                                <ShareIcon/>
+                                <Typography >Share! </Typography>
+                            </Button>
                         </div>
                     </Grid>
                 </Grid>
