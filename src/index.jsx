@@ -5,7 +5,7 @@ import reportWebVitals from './reportWebVitals'
 import Amplify from 'aws-amplify'
 import {Auth} from 'aws-amplify';
 import config from './aws-exports'
-import BasicExample from './App'
+import App from './App'
 import CssBaseline from '@material-ui/core/CssBaseline';
 
 Amplify.configure({
@@ -19,7 +19,7 @@ Auth.configure(config)
 ReactDOM.render(
   <React.StrictMode>
     <CssBaseline/>
-    <BasicExample />
+    <App />
   </React.StrictMode>,
   document.getElementById('root')
 )

@@ -23,7 +23,7 @@ const getValueFromURL = () => {
     return paths.indexOf(window.location.pathname)
 }
 
-export default function BasicExample () {
+export default function App () {
     const [value, setValue] = useState(getValueFromURL())
     const { m } = queryString.parse(location.search);
 
