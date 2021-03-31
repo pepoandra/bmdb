@@ -6,7 +6,7 @@ import movieImg from '../imgs/movie.jpg';
 import CardHeader from "@material-ui/core/CardHeader";
 import Grid from "@material-ui/core/Grid";
 import CardContent from "@material-ui/core/CardContent"; // Tell webpack this JS file uses this image
-import { withStyles, makeStyles } from '@material-ui/core/styles';
+import { withStyles } from '@material-ui/core/styles';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import Paper from '@material-ui/core/Paper';
